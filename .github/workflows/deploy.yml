@@ -52,11 +52,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install
 
       - name: Build with Next.js
         env:
@@ -69,7 +72,7 @@ jobs:
           API_STAGE: ${{ github.event.inputs.environment || 'prod' }}
           ADMIN_USERNAME: ${{ github.event.inputs.skip_posts_fetch == 'true' && '' || secrets.ADMIN_USERNAME }}
           ADMIN_PASSWORD: ${{ github.event.inputs.skip_posts_fetch == 'true' && '' || secrets.ADMIN_PASSWORD }}
-        run: npm run build
+        run: pnpm run build
 
       - name: Deployment Summary
         if: github.event_name == 'workflow_dispatch'
