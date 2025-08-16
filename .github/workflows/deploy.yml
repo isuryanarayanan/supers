@@ -63,10 +63,10 @@ jobs:
         env:
           NEXT_PUBLIC_BASE_PATH: /supers
           NEXT_PUBLIC_DEFAULT_THEME: ${{ github.event.inputs.theme || 'dark' }}
-          NEXT_PUBLIC_API_BASE_URL: https://lcjswmxoq3.execute-api.ap-south-1.amazonaws.com/${{ github.event.inputs.environment || 'prod' }}
+          NEXT_PUBLIC_API_BASE_URL: https://zrzucmu4zl.execute-api.ap-south-1.amazonaws.com/${{ github.event.inputs.environment || 'prod' }}
           NEXT_PUBLIC_SITE_URL: https://${{ github.repository_owner }}.github.io/supers
           # Environment variables for the prebuild posts fetch (only if not skipping)
-          API_BASE_URL: ${{ github.event.inputs.skip_posts_fetch == 'true' && '' || format('https://lcjswmxoq3.execute-api.ap-south-1.amazonaws.com/{0}', github.event.inputs.environment || 'prod') }}
+          API_BASE_URL: ${{ github.event.inputs.skip_posts_fetch == 'true' && '' || format('https://zrzucmu4zl.execute-api.ap-south-1.amazonaws.com/{0}', github.event.inputs.environment || 'prod') }}
           API_STAGE: ${{ github.event.inputs.environment || 'prod' }}
           ADMIN_USERNAME: ${{ github.event.inputs.skip_posts_fetch == 'true' && '' || secrets.ADMIN_USERNAME }}
           ADMIN_PASSWORD: ${{ github.event.inputs.skip_posts_fetch == 'true' && '' || secrets.ADMIN_PASSWORD }}

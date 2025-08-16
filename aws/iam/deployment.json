@@ -185,6 +185,33 @@
             ]
         },
         {
+            "Sid": "ECRContainerRegistry",
+            "Effect": "Allow",
+            "Action": [
+                "ecr:CreateRepository",
+                "ecr:DeleteRepository",
+                "ecr:DescribeRepositories",
+                "ecr:ListImages",
+                "ecr:DescribeImages",
+                "ecr:BatchDeleteImage",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:PutImage",
+                "ecr:InitiateLayerUpload",
+                "ecr:UploadLayerPart",
+                "ecr:CompleteLayerUpload",
+                "ecr:GetAuthorizationToken",
+                "ecr:SetRepositoryPolicy",
+                "ecr:GetRepositoryPolicy",
+                "ecr:DeleteRepositoryPolicy"
+            ],
+            "Resource": [
+                "arn:aws:ecr:ap-south-1:961341520772:repository/serverless-supers-files-*",
+                "*"
+            ]
+        },
+        {
             "Sid": "CreateDynamoDBTables",
             "Effect": "Allow",
             "Action": [

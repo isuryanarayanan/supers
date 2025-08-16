@@ -5,7 +5,8 @@ provider:
   runtime: nodejs18.x
   region: ap-south-1
   stage: ${opt:stage, 'dev'}
-  timeout: 30 # Increase timeout to 30 seconds
+  timeout: 30
+  memorySize: 512
   
   # Enable binary media types for API Gateway
   apiGateway:
@@ -21,31 +22,58 @@ provider:
   # Load runtime env values from a fixed file to avoid accidental shell bleed
   environment: ${file(./env-runtime.js)}
 
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - s3:GetObject
-        - s3:PutObject
-        - s3:DeleteObject
-        - s3:ListBucket
-        - s3:HeadObject
-      Resource:
-        - "arn:aws:s3:::${self:provider.environment.AWS_S3_BUCKET_NAME}"
-        - "arn:aws:s3:::${self:provider.environment.AWS_S3_BUCKET_NAME}/*"
-    # DynamoDB permissions
-    - Effect: Allow
-      Action:
-        - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-        - dynamodb:BatchGetItem
-        - dynamodb:BatchWriteItem
-      Resource:
-        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_NAME, 'Supers-Posts'}"
-        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_NAME, 'Supers-Posts'}/index/*"
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:PutObject
+            - s3:DeleteObject
+            - s3:ListBucket
+            - s3:HeadObject
+          Resource:
+            - "arn:aws:s3:::${self:provider.environment.AWS_S3_BUCKET_NAME}"
+            - "arn:aws:s3:::${self:provider.environment.AWS_S3_BUCKET_NAME}/*"
+        # DynamoDB permissions
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:BatchGetItem
+            - dynamodb:BatchWriteItem
+          Resource:
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_NAME, 'Supers-Posts'}"
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_NAME, 'Supers-Posts'}/index/*"
+        # Basic Lambda execution permissions
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+          Resource: "arn:aws:logs:${self:provider.region}:*:*"
+
+# Optimize packaging to avoid the 262MB limit
+package:
+  patterns:
+    - '!.git/**'
+    - '!.serverless/**'
+    - '!.vscode/**'
+    - '!test/**'
+    - '!tests/**'
+    - '!*.test.js'
+    - '!*.spec.js'
+    - '!coverage/**'
+    - '!*.md'
+    - '!log-checker.md'
+    - '!package-lock.json'
+    - '!yarn.lock'
+    - '!Dockerfile'
+    - '!.dockerignore'
 
 functions:
   auth-login:

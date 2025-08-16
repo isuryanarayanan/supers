@@ -1,0 +1,29 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+README*
+docs/
+
+# Development files
+.env*
+.vscode/
+.serverless/
+
+# Testing
+test/
+tests/
+__tests__/
+*.test.js
+*.spec.js
+coverage/
+
+# Node.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+*.log
