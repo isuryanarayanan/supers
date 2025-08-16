@@ -7,155 +7,64 @@ This is a Next.js 13+ project using the App Router, TypeScript, Tailwind CSS, an
 ### Key Technologies
 - Next.js with App Router for routing and server components
 - TypeScript for type safety
-- Tailwind CSS for styling
-- Shadcn UI for pre-built, customizable components
-- Environment-controlled theme (light/dark)
-- Static site generation for GitHub Pages deployment
+# Copilot Cheatsheet (answers short, point to files fast)
 
-### Core Features
-- Cell-based content system for posts and projects
-- Visual post editor with live preview
-- Responsive layout with mobile navigation
-- Environment-controlled theme system
-- Static deployment to GitHub Pages
-- Newsletter subscription form
-- Social media integration
+Next.js App Router + TypeScript + Tailwind + Shadcn. Optional AWS serverless (Lambda + API Gateway + DynamoDB + S3).
 
-### Project Structure
-```
-app/
-  layout.tsx             # Root layout with theme provider
-  page.tsx              # Home page with featured content
-  (pages)/
-    blog/               # Blog posts listing
-    edit/[id]/         # Visual post editor
-    info/              # About/Info page
-    post/[id]/         # Individual post view
-    projects/          # Projects listing
-components/
-  editor/              # Post editing components
-  layout/              # Layout components (header, footer, nav)
-  post/               # Post-related components
-  ui/                 # Shadcn UI components
-  theme-provider.tsx  # Theme provider with env control
-```
+## quick find (keyword → path)
+- docs hub → `docs/index.md`, `docs/README.md`
+- overview/branding → `docs/intro/OVERVIEW.md`, `docs/intro/BRANDING.md`
+- setup (full/quick) → `docs/setup.md`, `docs/getting-started/QUICK_START.md`
+- env (frontend + functions) → `docs/getting-started/ENVIRONMENT.md`, `aws/env/.env.*`
+- AWS setup (E2E) → `docs/deploy/AWS_SETUP.md`
+- serverless functions (code) → `functions/aws/`; deploy guide → `docs/deploy/FUNCTIONS_AWS.md`
+- DynamoDB schema → `docs/deploy/DYNAMODB_SETUP.md` (table: `Supers-Posts`)
+- S3 setup/CORS/policy → `docs/deploy/S3_SETUP.md`, `aws/config/s3-cors-config.json`, `aws/config/s3-bucket-policy.json`
+- CI/CD → `docs/deploy/CICD.md`
+- IAM (split) → deploy: `aws/iam/deployment.json`, runtime: `aws/iam/functions.json`
+- AWS scripts → check: `aws/scripts/check-aws.js`, ddb: `aws/scripts/dynamodb-init.js`, s3: `aws/scripts/s3-init.js`, cleanup: `aws/scripts/cleanup.sh`
+- API docs → posts: `docs/api/POSTS_API.md`, files: `docs/api/FILES_API.md`, index: `docs/api/README.md`, `docs/api-functions.md`
+- content system → guide: `docs/content-management.md`, types: `docs/content/POST_TYPES.md`, workflow: `docs/content/WORKFLOW.md`
+- UI/components → `components/ui/*`
+- editor → `components/editor/*`
+- post renderers → `components/post/*-cell.tsx`, `components/post/post-card.tsx`, `components/post/post-cell.tsx`
+- pages (App Router) → `app/*` (e.g. announcements: `app/(pages)/posts/announcements/page.tsx`)
 
-### Environment Variables
-```env
-# Theme setting (light/dark)
-NEXT_PUBLIC_DEFAULT_THEME="light"
+## core facts
+- Content is cell-based. Default static: `data/posts.ts`. Optional API-backed.
+- Backend (optional): DynamoDB (`Supers-Posts`) + S3 via Lambda/API Gateway.
+- Theme is env-only: `NEXT_PUBLIC_DEFAULT_THEME`.
+- GitHub Pages base path: `NEXT_PUBLIC_BASE_PATH`.
 
-# Base path for GitHub Pages
-NEXT_PUBLIC_BASE_PATH="/repository-name"
-```
+## env vars (by intent)
+- Frontend: `NEXT_PUBLIC_API_BASE_URL`, `NEXT_PUBLIC_DEFAULT_THEME`, `NEXT_PUBLIC_BASE_PATH`
+- AWS core: `AWS_REGION`, `DYNAMODB_TABLE_NAME`, `AWS_S3_BUCKET_NAME`
+- Auth: `JWT_SECRET`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`
+- CORS/uploads: `ALLOWED_ORIGIN`, `MAX_FILE_SIZE`, `ALLOWED_FILE_TYPES`
 
-## Development Guidelines
+## route me to… (common requests)
+- “check aws / services up” → `aws/scripts/check-aws.js` (uses `aws/env/.env.dev|.production`)
+- “create dynamodb / s3” → `aws/scripts/dynamodb-init.js`, `aws/scripts/s3-init.js`; configs in `aws/config/*`; policies in `aws/iam/*`
+- “deploy serverless / functions” → code: `functions/aws/`; how-to: `docs/deploy/FUNCTIONS_AWS.md`
+- “update iam permissions” → `aws/iam/deployment.json` (provisioning), `aws/iam/functions.json` (runtime)
+- “content types / editor / cells” → `docs/content-management.md`, `docs/content/POST_TYPES.md`, `components/editor/*`, `components/post/*`
+- “api endpoints” → `docs/api/POSTS_API.md`, `docs/api/FILES_API.md`
+- “env setup” → `docs/getting-started/ENVIRONMENT.md`, files: `aws/env/.env.*`
 
-### Code Standards
-- Use TypeScript with proper type definitions
-- Follow Next.js 13+ App Router patterns
-- Implement proper error boundaries
-- Handle loading and error states
-- Follow accessibility standards
-- Keep components modular and reusable
+## mini project map
+- app/: layouts/pages (App Router)
+- components/: ui/, editor/, post/, layout/
+- data/: `posts.ts`
+- functions/aws/: serverless handlers/config
+- aws/: env/, iam/, scripts/, config/
+- docs/: indexes + guides (see quick find)
+## Core facts (for quick reasoning)
 
-### Styling Guidelines
-- Use Tailwind CSS for styling
-- Follow responsive design principles
-- Maintain consistent spacing using Tailwind's spacing scale
-- Use semantic color tokens (background, foreground, muted, etc.)
-- Follow the established vertical layout pattern
 
-### Content Management
-- Posts are stored in `data/posts.ts`
-- Each post has a type (blog/project), status, and cells array
-- Cells support markdown and image content
-- Thumbnails are handled at the post level
-- Featured posts are marked with `featured: true`
+## Common keywords → env vars
 
-### Deployment
-- GitHub Actions workflow for automated deployment
-- Static site generation with `next export`
-- Proper base path handling for GitHub Pages
-- Image optimization settings for static deployment
-- Automated build and deployment on main branch pushes
 
-## Available Components
+## When asked to… (routing hints)
 
-### Shadcn UI Components
-All components are available under `@/components/ui/`:
 
-#### Layout Components:
-- Card - Content containers
-- Sheet - Side panels
-- Drawer - Mobile-friendly panels
-- Navigation Menu - Main navigation
-- Menubar - Application menus
-
-#### Form Components:
-- Button - Actions
-- Input - Text input
-- Textarea - Multiline input
-- Select - Dropdown selection
-- Radio Group - Exclusive selection
-- Switch - Boolean toggles
-- Toggle - Togglable options
-- Form - Form validation
-
-#### Display Components:
-- Alert - Important messages
-- Badge - Status indicators
-- Progress - Progress indicators
-- Table - Tabular data
-- Avatar - User avatars
-
-#### Overlay Components:
-- Dialog - Modal dialogs
-- Popover - Floating content
-- Dropdown Menu - Context menus
-- Hover Card - Hover tooltips
-- Sonner - Toast notifications
-
-#### Navigation Components:
-- Tabs - Tabbed interfaces
-- Accordion - Collapsible content
-
-### Custom Components
-
-#### Post Components:
-- PostCard - Display post previews
-- PostCell - Render different cell types
-- MarkdownCell - Render markdown content
-- ImageCell - Handle image display
-- ThumbnailCell - Post thumbnail display
-
-#### Editor Components:
-- EditPost - Main post editor
-- VisualEditor - WYSIWYG editor interface
-
-#### Layout Components:
-- Header - Site header with navigation
-- Footer - Site footer with newsletter
-- MainNav - Desktop navigation
-- MobileNav - Responsive mobile menu
-
-## Usage Guidelines
-
-### Component Usage
-- Import from `@/components/ui` using the configured alias
-- Follow Shadcn UI's composition patterns
-- Use built-in variants and className props
-- Consider server/client component boundaries
-- Use Lucide icons from `lucide-react`
-
-### Post Management
-- Create posts in `data/posts.ts`
-- Use the visual editor at `/edit/[id]`
-- Set post status to "published" for visibility
-- Add thumbnails for better visual appeal
-- Mark posts as featured to show on home page
-
-### Theme Handling
-- Theme is controlled via `NEXT_PUBLIC_DEFAULT_THEME`
-- No user toggle available - environment controlled
-- Use semantic color tokens for consistency
+## Minimal project map

@@ -4,10 +4,15 @@
   "private": true,
   "scripts": {
     "dev:site": "next dev",
-    "dev:api": "cd functions/aws && export $(cat .env.local | grep -v '^#' | xargs) && npm run dev",
-    "deploy:api:dev": "cd functions/aws && export $(cat .env.dev | grep -v '^#' | xargs) && npm run deploy:dev",
-    "deploy:api:prod": "cd functions/aws && export $(cat .env.production | grep -v '^#' | xargs) && npm run deploy:prod",
-    "remove:api:prod": "cd functions/aws && export $(cat .env.production | grep -v '^#' | xargs) && npm run remove:prod",
+    "dev:api": "cd functions/aws && export STAGE=dev && export $(grep -E '^(AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY|AWS_SESSION_TOKEN|AWS_REGION)=' ../../aws/env/.env.dev | xargs) && npm run dev",
+    "deploy:api:prod": "cd functions/aws && export $(grep -E '^(AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY|AWS_SESSION_TOKEN|AWS_REGION)=' ../../aws/env/.env.deployment.prod | xargs) && npm run deploy:prod",
+    "remove:api:prod": "cd functions/aws && export $(grep -E '^(AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY|AWS_SESSION_TOKEN|AWS_REGION)=' ../../aws/env/.env.deployment.prod | xargs) && npm run remove:prod",
+    "aws:check": "ENV=dev node aws/scripts/check-aws.js",
+    "aws:check:prod": "ENV=production node aws/scripts/check-aws.js",
+    "aws:init:dynamodb": "ENV=deployment.prod node aws/scripts/dynamodb-init.js",
+    "aws:init:s3": "ENV=deployment.prod node aws/scripts/s3-init.js",
+    "aws:init:dynamodb:dev": "ENV=deployment.dev node aws/scripts/dynamodb-init.js",
+    "aws:init:s3:dev": "ENV=deployment.dev node aws/scripts/s3-init.js",
     "prebuild": "node scripts/build-posts.js",
     "build": "next build",
     "build:full": "node scripts/deploy.js full",
@@ -24,7 +29,9 @@
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.859.0",
+    "@aws-sdk/client-lambda": "^3.865.0",
     "@aws-sdk/client-s3": "^3.846.0",
+    "@aws-sdk/client-sts": "^3.864.0",
     "@aws-sdk/lib-dynamodb": "^3.859.0",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
@@ -55,6 +62,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "dotenv": "^17.2.1",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.517.0",
     "markdown-to-jsx": "^7.7.7",
@@ -86,5 +94,6 @@
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.4",
     "typescript": "^5"
-  }
+  },
+  "packageManager": "pnpm@9.15.9+sha512.68046141893c66fad01c079231128e9afb89ef87e2691d69e4d40eee228988295fd4682181bae55b58418c3a253bde65a505ec7c5f9403ece5cc3cd37dcf2531"
 }

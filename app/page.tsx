@@ -58,12 +58,10 @@ export default function Home() {
             </Link>
           </div>
           <h1 className="text-4xl font-black tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl leading-none">
-            <span className="text-primary">
-              {"<"}arun nura{">"}
-            </span>
+            <span className="text-primary">supers</span>
           </h1>
           <p className="text-xl text-muted-foreground md:text-2xl font-light tracking-wide">
-            multi-disciplinary art practitioner
+            Surya Narayanan · Senior Software Engineer, WareIQ · technical + artistic
           </p>
         </section>
 

@@ -11,7 +11,7 @@ const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
 // JWT middleware
 const verifyToken = (event) => {
   const authHeader = event.headers.Authorization || event.headers.authorization;
-  
+
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     throw new Error('No token provided');
   }
@@ -56,7 +56,7 @@ exports.handler = async (event) => {
     };
 
     const data = await s3.listObjectsV2(params).promise();
-    
+
     if (!data.Contents) {
       return {
         statusCode: 200,
@@ -120,7 +120,7 @@ exports.handler = async (event) => {
     };
   } catch (error) {
     console.error('Error listing files:', error);
-    
+
     if (error.name === 'JsonWebTokenError' || error.message === 'No token provided') {
       return {
         statusCode: 401,

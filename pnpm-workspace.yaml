@@ -1,3 +1,7 @@
+packages:
+  - .
+  - functions/aws
+
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - sharp

@@ -1,4 +1,4 @@
-service: nuraweb-files
+service: supers-files
 
 provider:
   name: aws
@@ -18,16 +18,8 @@ provider:
       - 'application/pdf'
       - 'application/octet-stream'
   
-  environment:
-    ALLOWED_ORIGIN: ${env:ALLOWED_ORIGIN}
-    JWT_SECRET: ${env:JWT_SECRET}
-    ADMIN_USERNAME: ${env:ADMIN_USERNAME}
-    ADMIN_PASSWORD: ${env:ADMIN_PASSWORD}
-    AWS_S3_BUCKET_NAME: ${env:AWS_S3_BUCKET_NAME}
-    MAX_FILE_SIZE: ${env:MAX_FILE_SIZE}
-    ALLOWED_FILE_TYPES: ${env:ALLOWED_FILE_TYPES}
-    # DynamoDB configuration
-    DYNAMODB_TABLE_NAME: ${env:DYNAMODB_TABLE_NAME, 'NuraWeb-Posts'}
+  # Load runtime env values from a fixed file to avoid accidental shell bleed
+  environment: ${file(./env-runtime.js)}
 
   iamRoleStatements:
     - Effect: Allow
@@ -38,8 +30,8 @@ provider:
         - s3:ListBucket
         - s3:HeadObject
       Resource:
-        - "arn:aws:s3:::${env:AWS_S3_BUCKET_NAME}"
-        - "arn:aws:s3:::${env:AWS_S3_BUCKET_NAME}/*"
+        - "arn:aws:s3:::${self:provider.environment.AWS_S3_BUCKET_NAME}"
+        - "arn:aws:s3:::${self:provider.environment.AWS_S3_BUCKET_NAME}/*"
     # DynamoDB permissions
     - Effect: Allow
       Action:
@@ -52,8 +44,8 @@ provider:
         - dynamodb:BatchGetItem
         - dynamodb:BatchWriteItem
       Resource:
-        - "arn:aws:dynamodb:${self:provider.region}:*:table/${env:DYNAMODB_TABLE_NAME, 'NuraWeb-Posts'}"
-        - "arn:aws:dynamodb:${self:provider.region}:*:table/${env:DYNAMODB_TABLE_NAME, 'NuraWeb-Posts'}/index/*"
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_NAME, 'Supers-Posts'}"
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_NAME, 'Supers-Posts'}/index/*"
 
 functions:
   auth-login:
@@ -63,7 +55,7 @@ functions:
           path: auth/login
           method: post
           cors:
-            origin: ${env:ALLOWED_ORIGIN}
+            origin: ${self:provider.environment.ALLOWED_ORIGIN}
             headers:
               - Content-Type
               - Authorization
@@ -76,7 +68,7 @@ functions:
           path: auth/verify
           method: get
           cors:
-            origin: ${env:ALLOWED_ORIGIN}
+            origin: ${self:provider.environment.ALLOWED_ORIGIN}
             headers:
               - Content-Type
               - Authorization
@@ -89,7 +81,7 @@ functions:
           path: files
           method: get
           cors:
-            origin: ${env:ALLOWED_ORIGIN}
+            origin: ${self:provider.environment.ALLOWED_ORIGIN}
             headers:
               - Content-Type
               - Authorization
@@ -103,7 +95,7 @@ functions:
           path: files/upload
           method: post
           cors:
-            origin: ${env:ALLOWED_ORIGIN}
+            origin: ${self:provider.environment.ALLOWED_ORIGIN}
             headers:
               - Content-Type
               - Authorization
@@ -117,7 +109,7 @@ functions:
           path: files/presigned-url
           method: post
           cors:
-            origin: ${env:ALLOWED_ORIGIN}
+            origin: ${self:provider.environment.ALLOWED_ORIGIN}
             headers:
               - Content-Type
               - Authorization
@@ -130,7 +122,7 @@ functions:
           path: files/{id}
           method: delete
           cors:
-            origin: ${env:ALLOWED_ORIGIN}
+            origin: ${self:provider.environment.ALLOWED_ORIGIN}
             headers:
               - Content-Type
               - Authorization
@@ -144,7 +136,7 @@ functions:
           path: posts
           method: get
           cors:
-            origin: ${env:ALLOWED_ORIGIN}
+            origin: ${self:provider.environment.ALLOWED_ORIGIN}
             headers:
               - Content-Type
               - Authorization
@@ -157,7 +149,7 @@ functions:
           path: posts/{id}
           method: get
           cors:
-            origin: ${env:ALLOWED_ORIGIN}
+            origin: ${self:provider.environment.ALLOWED_ORIGIN}
             headers:
               - Content-Type
               - Authorization
@@ -170,7 +162,7 @@ functions:
           path: posts
           method: post
           cors:
-            origin: ${env:ALLOWED_ORIGIN}
+            origin: ${self:provider.environment.ALLOWED_ORIGIN}
             headers:
               - Content-Type
               - Authorization
@@ -183,7 +175,7 @@ functions:
           path: posts/{id}
           method: put
           cors:
-            origin: ${env:ALLOWED_ORIGIN}
+            origin: ${self:provider.environment.ALLOWED_ORIGIN}
             headers:
               - Content-Type
               - Authorization
@@ -196,7 +188,7 @@ functions:
           path: posts/{id}
           method: delete
           cors:
-            origin: ${env:ALLOWED_ORIGIN}
+            origin: ${self:provider.environment.ALLOWED_ORIGIN}
             headers:
               - Content-Type
               - Authorization
@@ -212,9 +204,74 @@ custom:
     host: localhost
     cors: true
   dotenv:
+    path: ${file(./dotenv-config.js)}
     exclude:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
       - AWS_REGION
 
-# No additional AWS resources needed - using existing DynamoDB table
+resources:
+  Resources:
+    # SupersFilesBucket:
+    #   Type: AWS::S3::Bucket
+    #   Properties:
+    #     BucketName: ${env:AWS_S3_BUCKET_NAME}
+    #     PublicAccessBlockConfiguration:
+    #       BlockPublicAcls: false
+    #       BlockPublicPolicy: false
+    #       IgnorePublicAcls: false
+    #       RestrictPublicBuckets: false
+    #     CorsConfiguration:
+    #       CorsRules:
+    #         - AllowedMethods: [GET, PUT, POST, DELETE, HEAD]
+    #           AllowedOrigins: ['*']
+    #           AllowedHeaders: ['*']
+    #           ExposedHeaders: ['ETag', 'x-amz-version-id']
+    #           MaxAge: 86400
+
+    # SupersFilesBucketPolicy:
+    #   Type: AWS::S3::BucketPolicy
+    #   Properties:
+    #     Bucket: ${env:AWS_S3_BUCKET_NAME}
+    #     PolicyDocument:
+    #       Version: '2012-10-17'
+    #       Statement:
+    #         - Sid: PublicReadGetObject
+    #           Effect: Allow
+    #           Principal: '*'
+    #           Action: 's3:GetObject'
+    #           Resource: 'arn:aws:s3:::${env:AWS_S3_BUCKET_NAME}/*'
+
+    # SupersPostsTable: 
+    #   Type: AWS::DynamoDB::Table
+    #   Properties:
+    #     TableName: ${env:DYNAMODB_TABLE_NAME, 'Supers-Posts'}
+    #     AttributeDefinitions:
+    #       - AttributeName: PK
+    #         AttributeType: S
+    #       - AttributeName: SK
+    #         AttributeType: S
+    #       - AttributeName: created_at
+    #         AttributeType: S
+    #       - AttributeName: status
+    #         AttributeType: S
+    #     KeySchema:
+    #       - AttributeName: PK
+    #         KeyType: HASH
+    #       - AttributeName: SK
+    #         KeyType: RANGE
+    #     GlobalSecondaryIndexes:
+    #       - IndexName: CreatedAtIndex
+    #         KeySchema:
+    #           - AttributeName: status
+    #             KeyType: HASH
+    #           - AttributeName: created_at
+    #             KeyType: RANGE
+    #         Projection:
+    #           ProjectionType: ALL
+    #         ProvisionedThroughput:
+    #           ReadCapacityUnits: 5
+    #           WriteCapacityUnits: 5
+    #     ProvisionedThroughput:
+    #       ReadCapacityUnits: 10
+    #       WriteCapacityUnits: 10

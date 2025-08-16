@@ -63,9 +63,7 @@ exports.handler = async (event, context) => {
       const validTypes = [
         "project",
         "blog",
-        "paper",
-        "article",
-        "story",
+        "announcement",
         "general",
       ];
       if (!validTypes.includes(updateData.type)) {

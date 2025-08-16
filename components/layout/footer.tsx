@@ -15,7 +15,7 @@ export function Footer() {
         <div className="flex flex-col items-center text-center space-y-8">
           {/* Social Media Section */}
           <div className="space-y-4">
-            <h3 className="font-bold text-xl tracking-tight">Follow Me</h3>
+            <h3 className="font-bold text-xl tracking-tight">Connect</h3>
             <div className="flex flex-wrap gap-4 justify-center">
               {/* <Button variant="outline" size="icon" asChild>
                 <Link
@@ -28,21 +28,13 @@ export function Footer() {
                 </Link>
               </Button> */}
               <Button variant="outline" size="icon" asChild>
-                <Link
-                  href="https://github.com/arunrajan6600"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <Link href="https://github.com/isuryanarayanan" target="_blank" rel="noopener noreferrer">
                   <Github className="h-4 w-4" />
                   <span className="sr-only">GitHub</span>
                 </Link>
               </Button>
               <Button variant="outline" size="icon" asChild>
-                <Link
-                  href="https://instagram.com/moodupani"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <Link href="https://instagram.com/" target="_blank" rel="noopener noreferrer">
                   <Instagram className="h-4 w-4" />
                   <span className="sr-only">Instagram</span>
                 </Link>
@@ -58,7 +50,7 @@ export function Footer() {
                 </Link>
               </Button> */}
               <Button variant="outline" size="icon" asChild>
-                <Link href="mailto:arunr6600@yahoo.com">
+                <Link href="mailto:isurya.dev@gmail.com">
                   <Mail className="h-4 w-4" />
                   <span className="sr-only">Email</span>
                 </Link>
@@ -70,7 +62,7 @@ export function Footer() {
         <Separator className="my-8" />
 
         <div className="text-center text-sm text-muted-foreground font-medium">
-          © {new Date().getFullYear()} Arun Nura. All rights reserved.
+          © {new Date().getFullYear()} Surya Narayanan · supers
         </div>
       </div>
     </footer>

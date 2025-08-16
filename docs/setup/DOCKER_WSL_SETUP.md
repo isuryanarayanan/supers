@@ -1,6 +1,6 @@
 # Docker Desktop WSL 2 Setup Guide
 
-This guide helps you set up Docker Desktop with WSL 2 integration for the NuraWeb Posts feature.
+Deprecated. Not applicable for supers.
 
 ## Quick Fix for "docker-compose not found" Error
 
@@ -93,7 +93,7 @@ After setup, verify everything works:
 
 ```bash
 # Navigate to your project
-cd ~/dev/nuraweb
+cd ~/dev/supers
 
 # Test Docker with a simple command
 docker run hello-world

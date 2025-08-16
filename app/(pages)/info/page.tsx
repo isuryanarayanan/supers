@@ -1,15 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import Image from "next/image";
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen py-8 md:py-12">
-      <div className="container max-w-6xl mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left Side - Text Content */}
-          <div className="space-y-8 order-2 lg:order-1">
+      <div className="container max-w-3xl mx-auto px-4">
+        <div className="grid gap-12">
+          <div className="space-y-8">
             <section>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-8">
                 About
@@ -18,109 +16,83 @@ export default function AboutPage() {
               <div className="space-y-8">
                 <div className="prose prose-lg dark:prose-invert max-w-none">
                   <p className="text-lg font-light leading-relaxed text-foreground">
-                    arun nura is a kerala-based multidisciplinary art
-                    practitioner specialising in visual practices, experimental
-                    films and theatre performances. he graduated as a mechanical
-                    engineer, and his areas of interest widened into
-                    anthropological studies, films, performance arts and ai-code
-                    art.{" "}
-                    <Link
-                      href="https://www.instagram.com/arun.nura/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline font-medium"
-                    >
-                      @moodupani
-                    </Link>
-                    .
+                    I’m <strong>Surya Narayanan</strong>, a Software Engineer based in Kerala, India.
+                    I build distributed systems, developer tooling, and front-end experiences.
+                    Currently building supply-chain and logistics systems at <strong>WareIQ / Inventorylogiq</strong>.
                   </p>
 
-                  <h6 className="text-base font-bold mt-8 mb-4 tracking-wide uppercase text-muted-foreground">
-                    Key Concepts - Sporadic Cinema, Pseudo-futurism, Process-ing
-                  </h6>
+                  <h3 className="text-xl font-semibold mt-8 mb-3 tracking-tight">Experience highlights</h3>
+                  <ul className="list-disc pl-6 space-y-2">
+                    <li>
+                      <strong>WareIQ / Inventorylogiq (2023—Present)</strong> — Built <em>Perimeter</em>, an egress traffic controller in Go (1.1M+ req/day).
+                      Developed a time-series forecasting service for inventory demand and optimal routing.
+                      Scaled a B2B logistics middleware platform in collaboration with global partners.
+                    </li>
+                    <li>
+                      <strong>Glitchh (2022—2023)</strong> — Led a small team and multiple backend services for a gaming social platform.
+                      Built scalable Python services on AWS with Kubernetes, automated release workflows, created <em>Genie</em> (env orchestrator),
+                      and transitioned REST services to GraphQL with frontend helpers.
+                    </li>
+                    <li>
+                      <strong>Edith Industries (2019—2020)</strong> — Full‑stack apps from scratch; DB design across PostgreSQL/MySQL/MongoDB;
+                      deep-learning image classifiers for satellite spectral data (Reboot Kerala Hackathon).
+                    </li>
+                    <li>
+                      <strong>Atlaria (2021—2022)</strong> — Website and tools for a Solana NFT collection.
+                    </li>
+                  </ul>
+
+                  <h3 className="text-xl font-semibold mt-8 mb-3 tracking-tight">Recent work</h3>
+                  <ul className="list-disc pl-6 space-y-2">
+                    <li><strong>CardanoWarriors.io</strong> — Floor bot scanning Cardano NFT markets in real-time; moderation bot for community ops.</li>
+                    <li><strong>@BrownNFT</strong> — Auction system for artwork in Discord.</li>
+                    <li><strong>ASIET</strong> — Websites for college events and student-led projects.</li>
+                  </ul>
+
+                  <h3 className="text-xl font-semibold mt-8 mb-3 tracking-tight">Skills</h3>
+                  <ul className="list-disc pl-6 space-y-2">
+                    <li><strong>Languages</strong>: Go, Python, JavaScript/TypeScript, Bash, Lua, C++</li>
+                    <li><strong>Backend</strong>: Django, Flask, Node.js; REST/GraphQL; Kubernetes (k3s/k3d), Helm; NGINX, Envoy</li>
+                    <li><strong>Frontend</strong>: React, Next.js, Vue, React Native/Expo, Flutter</li>
+                    <li><strong>Cloud/Infra</strong>: AWS, Docker, Serverless, Firebase, SQL/NoSQL</li>
+                    <li><strong>Other</strong>: System design, UI/UX, diffusion/transformer model fine‑tuning</li>
+                  </ul>
+
+                  <h3 className="text-xl font-semibold mt-8 mb-3 tracking-tight">Education</h3>
+                  <p>B.Tech in Computer Science — Adi Shankara Institute of Engineering and Technology (2018–2022)</p>
                 </div>
 
                 <div className="grid gap-6">
                   <Card>
                     <CardContent className="p-6">
                       <h3 className="text-xl font-bold mb-4 tracking-tight">
-                        Download
-                      </h3>
-                      <Button asChild className="font-medium w-full sm:w-auto">
-                        <Link
-                          href="https://drive.google.com/file/d/15wvnriDqfn0tJTHynQ5Hs7UaNQc0eu3Z/view?usp=drive_link"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          CV and Resume
-                        </Link>
-                      </Button>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardContent className="p-6">
-                      <h3 className="text-xl font-bold mb-4 tracking-tight">
-                        Contact
+                        Connect
                       </h3>
                       <div className="space-y-3">
-                        <p className="text-muted-foreground">
-                          Feel free to reach out for collaborations or
-                          inquiries:
-                        </p>
-                        <div className="flex flex-col gap-3">
-                          <Button
-                            variant="link"
-                            className="p-0 h-auto justify-start font-medium"
-                            asChild
-                          >
-                            <a href="mailto:arunr6600@yahoo.com">
-                              Email: arunr6600@yahoo.com
-                            </a>
+                        <div className="flex gap-3 flex-wrap">
+                          <Button asChild className="font-medium">
+                            <Link href="mailto:a.suryanarayanan2000@gmail.com">Email</Link>
                           </Button>
-                          <Button
-                            variant="link"
-                            className="p-0 h-auto justify-start font-medium"
-                            asChild
-                          >
-                            <Link href="/blog">Blog</Link>
+                          <Button variant="outline" asChild className="font-medium">
+                            <Link href="https://github.com/isuryanarayanan" target="_blank" rel="noopener noreferrer">GitHub</Link>
+                          </Button>
+                          <Button variant="outline" asChild className="font-medium">
+                            <Link href="https://twitter.com/supersuryan" target="_blank" rel="noopener noreferrer">Twitter</Link>
+                          </Button>
+                          <Button variant="outline" asChild className="font-medium">
+                            <Link href="https://lnkd.in/dVV9SnEj" target="_blank" rel="noopener noreferrer">LinkedIn Article</Link>
+                          </Button>
+                          <Button variant="ghost" asChild className="font-medium">
+                            <Link href="/posts/blog">Blog</Link>
                           </Button>
                         </div>
+                        <p className="text-sm text-muted-foreground">📞 +91 62823 12736 · 📍 Kerala, India</p>
                       </div>
                     </CardContent>
                   </Card>
                 </div>
               </div>
             </section>
-          </div>
-
-          {/* Right Side - Interactive Images */}
-          <div className="relative h-[500px] md:h-[600px] lg:h-[700px] order-1 lg:order-2">
-            <div className="relative w-full h-full group">
-              {/* Default Image (monKEY) */}
-              <div className="absolute inset-0 transition-opacity duration-500 group-hover:opacity-0">
-                <Image
-                  src="https://arunrajan6600.github.io/arunnura/images/monKEY.png"
-                  alt="Wireframe Design"
-                  fill
-                  className="object-cover rounded-lg shadow-xl"
-                  unoptimized
-                  priority
-                />
-              </div>
-              {/* Hover Image (manKEY) - revealed on hover */}
-              <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                <Image
-                  src="https://arunrajan6600.github.io/arunnura/images/manKEY.png"
-                  alt="Modern Workspace"
-                  fill
-                  className="object-cover rounded-lg shadow-xl"
-                  unoptimized
-                />
-              </div>
-              {/* Subtle overlay for better contrast */}
-              <div className="absolute inset-0 bg-gradient-to-t from-background/10 to-transparent rounded-lg pointer-events-none" />
-            </div>
           </div>
         </div>
       </div>

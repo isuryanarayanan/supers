@@ -8,9 +8,9 @@ export function Header() {
       <div className="flex h-16 items-center justify-between px-4 md:px-6 w-full">
         {/* Logo on the left */}
         <div className="flex items-center">
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center space-x-2" aria-label="supers home">
             <span className="text-2xl md:text-3xl font-black text-foreground tracking-tight">
-              നു
+              supers
             </span>
           </Link>
         </div>

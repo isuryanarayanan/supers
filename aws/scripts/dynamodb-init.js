@@ -2,6 +2,10 @@ const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient, PutCommand } = require("@aws-sdk/lib-dynamodb");
 const { CreateTableCommand, ListTablesCommand, DeleteTableCommand, DescribeTableCommand } = require("@aws-sdk/client-dynamodb");
 
+// Default to production environment for DynamoDB initialization
+const environment = process.env.ENV || 'production';
+require('dotenv').config({ path: `./aws/env/.env.${environment}` });
+
 // AWS DynamoDB configuration
 const client = new DynamoDBClient({
   region: process.env.AWS_REGION || 'ap-south-1'
@@ -11,7 +15,7 @@ const docClient = DynamoDBDocumentClient.from(client);
 
 // Main Posts table
 const POSTS_TABLE = {
-  TableName: process.env.DYNAMODB_TABLE_NAME || 'NuraWeb-Posts',
+  TableName: process.env.DYNAMODB_TABLE_NAME || 'Supers-Posts',
   KeySchema: [
     { AttributeName: 'PK', KeyType: 'HASH' },  // Partition key
     { AttributeName: 'SK', KeyType: 'RANGE' }  // Sort key
@@ -47,16 +51,16 @@ async function createTables() {
     console.log('🗄️  Creating DynamoDB table in AWS...');
     console.log(`📍 Region: ${process.env.AWS_REGION || 'ap-south-1'}`);
     console.log(`📊 Table: ${POSTS_TABLE.TableName}`);
-    
+
     // Check if table already exists
     try {
-      const existingTable = await client.send(new DescribeTableCommand({ 
-        TableName: POSTS_TABLE.TableName 
+      const existingTable = await client.send(new DescribeTableCommand({
+        TableName: POSTS_TABLE.TableName
       }));
-      
+
       if (existingTable.Table?.TableStatus === 'ACTIVE') {
         console.log(`✅ Table ${POSTS_TABLE.TableName} already exists and is active`);
-        
+
         // Ask if user wants to add sample data
         console.log('🌱 Adding sample data...');
         await seedSampleData();
@@ -68,49 +72,49 @@ async function createTables() {
       }
       console.log(`📝 Table ${POSTS_TABLE.TableName} does not exist, creating...`);
     }
-    
+
     // Create the table
     const createResult = await client.send(new CreateTableCommand(POSTS_TABLE));
     console.log(`🚀 Creating table ${POSTS_TABLE.TableName}...`);
-    
+
     // Wait for table to be active
     console.log('⏳ Waiting for table to become active...');
     let tableStatus = 'CREATING';
     let attempts = 0;
     const maxAttempts = 30; // 5 minutes max
-    
+
     while (tableStatus !== 'ACTIVE' && attempts < maxAttempts) {
       await new Promise(resolve => setTimeout(resolve, 10000)); // Wait 10 seconds
-      
-      const describeResult = await client.send(new DescribeTableCommand({ 
-        TableName: POSTS_TABLE.TableName 
+
+      const describeResult = await client.send(new DescribeTableCommand({
+        TableName: POSTS_TABLE.TableName
       }));
-      
+
       tableStatus = describeResult.Table?.TableStatus;
       attempts++;
-      
+
       console.log(`   Status: ${tableStatus} (attempt ${attempts}/${maxAttempts})`);
     }
-    
+
     if (tableStatus === 'ACTIVE') {
       console.log(`✅ Table ${POSTS_TABLE.TableName} created successfully`);
-      
+
       // Add sample data
       console.log('🌱 Adding sample data...');
       await seedSampleData();
     } else {
       console.log(`⚠️  Table creation may still be in progress. Status: ${tableStatus}`);
     }
-    
+
   } catch (error) {
     console.error('❌ Error creating table:', error.message);
-    
+
     if (error.name === 'CredentialsProviderError') {
       console.error('   Please configure AWS credentials using: aws configure');
     } else if (error.name === 'UnauthorizedException') {
       console.error('   AWS credentials lack DynamoDB permissions');
     }
-    
+
     throw error;
   }
 }
@@ -118,13 +122,13 @@ async function createTables() {
 async function seedSampleData() {
   try {
     console.log('Seeding sample data...');
-    
+
     const samplePost = {
       PK: 'POST#01JCRGV1EMYNWQ7SVKGD9EFRC0',
       SK: 'POST',
       id: '01JCRGV1EMYNWQ7SVKGD9EFRC0',
-      title: 'Welcome to NuraWeb',
-      description: 'A modern web platform built with Next.js and DynamoDB',
+      title: 'Welcome to supers',
+      description: 'Surya\'s personal site built with Next.js and DynamoDB',
       post_type: 'article',
       status: 'published',
       created_at: new Date().toISOString(),
@@ -132,12 +136,12 @@ async function seedSampleData() {
       author: 'admin',
       tags: ['welcome', 'introduction']
     };
-    
+
     await docClient.send(new PutCommand({
       TableName: POSTS_TABLE.TableName,
       Item: samplePost
     }));
-    
+
     // Add sample post cells
     const sampleCells = [
       {
@@ -146,7 +150,7 @@ async function seedSampleData() {
         id: 'cell-001',
         post_id: '01JCRGV1EMYNWQ7SVKGD9EFRC0',
         cell_type: 'markdown',
-        content: '# Welcome to NuraWeb\n\nThis is a sample post to demonstrate our new DynamoDB-powered backend.',
+        content: '# Welcome to supers\n\nThis is a sample post to demonstrate the DynamoDB-powered backend.',
         order_index: 1
       },
       {
@@ -159,16 +163,16 @@ async function seedSampleData() {
         order_index: 2
       }
     ];
-    
+
     for (const cell of sampleCells) {
       await docClient.send(new PutCommand({
         TableName: POSTS_TABLE.TableName,
         Item: cell
       }));
     }
-    
+
     console.log('Sample data seeded successfully');
-    
+
   } catch (error) {
     console.error('Error seeding data:', error);
   }

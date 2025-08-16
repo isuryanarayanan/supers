@@ -44,12 +44,34 @@ class PostsApi {
     this.baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
   }
 
+  // Normalize legacy/unknown post types to supported PostType without using `any`
+  private normalizeType(input: unknown, fallback: PostType): PostType {
+    if (typeof input !== "string") return fallback;
+    const legacyMap: Record<string, PostType> = {
+      paper: "blog",
+      article: "blog",
+      story: "blog",
+    };
+    if (input in legacyMap) return legacyMap[input];
+    const allowed: ReadonlyArray<PostType> = [
+      "project",
+      "blog",
+      "announcement",
+      "general",
+    ];
+    return (allowed as readonly string[]).includes(input)
+      ? (input as PostType)
+      : fallback;
+  }
+
   // Utility to fix escaped newlines in post content
   private processPostContent(post: Post): Post {
     if (!post || !post.cells) return post;
 
     return {
       ...post,
+      // Normalize legacy types from older content
+  type: this.normalizeType((post as unknown as { type?: unknown })?.type, post.type),
       cells: post.cells.map((cell: Cell) => {
         if (cell.type === "markdown" && typeof cell.content === "string") {
           let content = cell.content;

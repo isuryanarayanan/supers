@@ -18,7 +18,7 @@ aws logs describe-log-groups --log-group-name-prefix "/aws/lambda/[FUNCTION-PREF
 
 **Example for our functions:**
 ```bash
-aws logs describe-log-groups --log-group-name-prefix "/aws/lambda/nuraweb-files-prod-files-presigned-url" --region ap-south-1
+aws logs describe-log-groups --log-group-name-prefix "/aws/lambda/supers-files-prod-files-presigned-url" --region ap-south-1
 ```
 
 ## Step 2: Get Recent Log Streams
@@ -37,14 +37,14 @@ aws logs describe-log-streams \
 **Example:**
 ```bash
 aws logs describe-log-streams \
-  --log-group-name "/aws/lambda/nuraweb-files-prod-files-presigned-url" \
+  --log-group-name "/aws/lambda/supers-files-prod-files-presigned-url" \
   --region ap-south-1 \
   --order-by LastEventTime \
   --descending \
   --max-items 5
 ```
 
-## Step 3: Get Log Events from a Specific Stream
+aws logs describe-log-groups --log-group-name-prefix "/aws/lambda/supers-files-prod-files-presigned-url" --region ap-south-1
 
 Get the actual log messages from a specific log stream:
 
@@ -58,12 +58,12 @@ aws logs get-log-events \
 **Example:**
 ```bash
 aws logs get-log-events \
-  --log-group-name "/aws/lambda/nuraweb-files-prod-files-presigned-url" \
+  --log-group-name "/aws/lambda/supers-files-prod-files-presigned-url" \
   --log-stream-name "2025/07/26/[\$LATEST]5bb44e2de1fd464da0a172231e51db4a" \
   --region ap-south-1
 ```
 
-**Note:** The `$` in `$LATEST` needs to be escaped as `\$` in bash.
+  --log-group-name "/aws/lambda/supers-files-prod-files-presigned-url" \
 
 ## Step 4: Filter Logs by Time Range
 
@@ -84,7 +84,7 @@ To search for specific error patterns across all log streams:
 
 ```bash
 aws logs filter-log-events \
-  --log-group-name "/aws/lambda/[LOG-GROUP-NAME]" \
+  --log-group-name "/aws/lambda/supers-files-prod-files-presigned-url" \
   --region [REGION] \
   --filter-pattern "ERROR" \
   --start-time [EPOCH-TIMESTAMP]
@@ -96,7 +96,7 @@ aws logs filter-log-events \
 START_TIME=$(date -d '1 hour ago' +%s)000
 
 aws logs filter-log-events \
-  --log-group-name "/aws/lambda/nuraweb-files-prod-files-presigned-url" \
+  --log-group-name "/aws/lambda/supers-files-prod-files-presigned-url" \
   --region ap-south-1 \
   --filter-pattern "ERROR" \
   --start-time $START_TIME
@@ -104,25 +104,18 @@ aws logs filter-log-events \
 
 ## Common Lambda Function Log Groups
 
-For our Nuraweb project, the log groups follow this pattern:
-- `/aws/lambda/nuraweb-files-prod-auth-login`
-- `/aws/lambda/nuraweb-files-prod-auth-verify`
-- `/aws/lambda/nuraweb-files-prod-files-list`
-- `/aws/lambda/nuraweb-files-prod-files-upload`
-- `/aws/lambda/nuraweb-files-prod-files-presigned-url`
-- `/aws/lambda/nuraweb-files-prod-files-delete`
-
 ## Log Analysis for Current Issue
 
 ### Error Found: Presigned URL Function
 **Error:** `SyntaxError: Unexpected token e in JSON at position 0`
-**Location:** `/var/task/files-presigned-url.js:77:50` (JSON.parse line)
-**Cause:** The `event.body` parameter contains malformed JSON starting with "e"
-
-### Recent Error Log Example:
-```
-2025-07-27T07:38:48.187Z	6cdae680-6721-4b48-bdd6-d0d37da81f90	ERROR	Pre-signed URL generation error: SyntaxError: Unexpected token e in JSON at position 0
     at JSON.parse (<anonymous>)
+For our supers project, the log groups follow this pattern:
+- `/aws/lambda/supers-files-prod-auth-login`
+- `/aws/lambda/supers-files-prod-auth-verify`
+- `/aws/lambda/supers-files-prod-files-list`
+- `/aws/lambda/supers-files-prod-files-upload`
+- `/aws/lambda/supers-files-prod-files-presigned-url`
+- `/aws/lambda/supers-files-prod-files-delete`
     at exports.handler (/var/task/files-presigned-url.js:77:50)
     at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1205:29)
 ```
@@ -138,8 +131,8 @@ For our Nuraweb project, the log groups follow this pattern:
 
 ```bash
 # Get latest logs for presigned URL function
-aws logs get-log-events --log-group-name "/aws/lambda/nuraweb-files-prod-files-presigned-url" --log-stream-name "$(aws logs describe-log-streams --log-group-name "/aws/lambda/nuraweb-files-prod-files-presigned-url" --region ap-south-1 --order-by LastEventTime --descending --max-items 1 --query 'logStreams[0].logStreamName' --output text)" --region ap-south-1
+aws logs get-log-events --log-group-name "/aws/lambda/supers-files-prod-files-presigned-url" --log-stream-name "$(aws logs describe-log-streams --log-group-name "/aws/lambda/supers-files-prod-files-presigned-url" --region ap-south-1 --order-by LastEventTime --descending --max-items 1 --query 'logStreams[0].logStreamName' --output text)" --region ap-south-1
 
 # Search for all errors in the last 24 hours
-aws logs filter-log-events --log-group-name "/aws/lambda/nuraweb-files-prod-files-presigned-url" --region ap-south-1 --filter-pattern "ERROR" --start-time $(date -d '24 hours ago' +%s)000
+aws logs filter-log-events --log-group-name "/aws/lambda/supers-files-prod-files-presigned-url" --region ap-south-1 --filter-pattern "ERROR" --start-time $(date -d '24 hours ago' +%s)000
 ```

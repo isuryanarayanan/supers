@@ -1,6 +1,6 @@
 # AWS Lambda Deployment Guide
 
-This directory contains AWS Lambda functions for the NuraWeb Files feature.
+This directory contains AWS Lambda functions for the supers Files and Posts features.
 
 ## Lambda Functions
 
@@ -47,7 +47,7 @@ For each function file, create a Lambda function in AWS Console:
 1. Go to AWS Lambda Console
 2. Click "Create function"
 3. Choose "Author from scratch"
-4. Set function name (e.g., `nuraweb-auth-login`)
+4. Set function name (e.g., `supers-auth-login`)
 5. Choose Node.js 18.x runtime
 6. Create function
 
@@ -80,11 +80,11 @@ In each Lambda function, add these environment variables:
 1. Go to API Gateway Console
 2. Create new REST API
 3. Create resources and methods:
-   - `POST /auth/login` → `nuraweb-auth-login`
-   - `GET /auth/verify` → `nuraweb-auth-verify`
-   - `GET /files` → `nuraweb-files-list`
-   - `POST /files/upload` → `nuraweb-files-upload`
-   - `DELETE /files/{id}` → `nuraweb-files-delete`
+  - `POST /auth/login` → `supers-auth-login`
+  - `GET /auth/verify` → `supers-auth-verify`
+  - `GET /files` → `supers-files-list`
+  - `POST /files/upload` → `supers-files-upload`
+  - `DELETE /files/{id}` → `supers-files-delete`
 
 ### 6. Enable CORS
 For each method in API Gateway:

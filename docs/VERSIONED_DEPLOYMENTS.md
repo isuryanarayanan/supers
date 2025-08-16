@@ -136,7 +136,7 @@ BUILD_TYPE=development  # or 'production'
 ```env
 # AWS DynamoDB connection (in functions/aws/.env)
 AWS_REGION=us-east-1
-DYNAMODB_TABLE_NAME=NuraWeb-Posts
+DYNAMODB_TABLE_NAME=Supers-Posts
 AWS_ACCESS_KEY_ID=your_access_key
 AWS_SECRET_ACCESS_KEY=your_secret_key
 JWT_SECRET=your_jwt_secret

@@ -3,8 +3,7 @@
 import { Post } from "@/types/post";
 import { BlogPostCard } from "./blog-post-card";
 import { ProjectPostCard } from "./project-post-card";
-import { PaperPostCard } from "./paper-post-card";
-import { ArticlePostCard } from "./article-post-card";
+// Legacy types are routed to BlogPostCard; announcement gets BlogPostCard styling
 
 interface PostCardProps {
   post: Post;
@@ -18,13 +17,8 @@ export function PostCard({ post, variant = "default" }: PostCardProps) {
       return <BlogPostCard post={post} />;
     case "project":
       return <ProjectPostCard post={post} variant={variant} />;
-    case "paper":
-      return <PaperPostCard post={post} />;
-    case "article":
-      return <ArticlePostCard post={post} />;
-    case "story":
-      // Use ArticlePostCard for stories as they're similar content
-      return <ArticlePostCard post={post} />;
+    case "announcement":
+      return <BlogPostCard post={post} />;
     case "general":
       // Use BlogPostCard for general writings
       return <BlogPostCard post={post} />;

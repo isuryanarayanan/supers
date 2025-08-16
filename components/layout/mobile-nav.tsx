@@ -43,7 +43,7 @@ export function MobileNav() {
           <div className="flex items-center justify-center py-8 px-6 border-b bg-muted/20">
             <Link href="/" className="flex items-center space-x-2">
               <span className="text-3xl font-black text-foreground tracking-tight">
-                നു
+                supers
               </span>
             </Link>
           </div>
@@ -84,18 +84,18 @@ export function MobileNav() {
                     Blog
                   </Link>
                   <Link
-                    href="/posts/articles"
+                    href="/posts/announcements"
                     onClick={handleLinkClick}
                     className="block rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground text-muted-foreground"
                   >
-                    Articles
+                    Announcements
                   </Link>
                   <Link
-                    href="/posts/papers"
+                    href="/posts/general"
                     onClick={handleLinkClick}
                     className="block rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground text-muted-foreground"
                   >
-                    Papers
+                    General
                   </Link>
                 </CollapsibleContent>
               </Collapsible>
@@ -114,7 +114,7 @@ export function MobileNav() {
           {/* Footer section (optional) */}
           <div className="border-t bg-muted/10 p-6">
             <p className="text-xs text-muted-foreground text-center font-medium">
-              © 2025 നു
+              © {new Date().getFullYear()} supers
             </p>
           </div>
         </div>

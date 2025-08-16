@@ -74,6 +74,14 @@ export function MainNav() {
               asChild
               className={`${navigationMenuTriggerStyle()} font-medium`}
             >
+              <Link href="/posts/announcements">Announcements</Link>
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink
+              asChild
+              className={`${navigationMenuTriggerStyle()} font-medium`}
+            >
               <Link href="/info">About</Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
@@ -136,7 +144,7 @@ export function MainNav() {
               </Link>
 
               <Link
-                href="/posts/papers"
+                href="/posts/announcements"
                 className="group block select-none rounded-xl p-6 leading-none no-underline outline-none transition-all duration-200 hover:bg-accent/50 hover:shadow-md focus:bg-accent focus:text-accent-foreground border border-transparent hover:border-border/50"
                 onClick={handleLinkClick}
               >
@@ -152,22 +160,21 @@ export function MainNav() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                        d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"
                       />
                     </svg>
                   </div>
                   <div className="text-base font-medium leading-none group-hover:text-accent-foreground">
-                    Articles & Papers
+                    Announcements
                   </div>
                 </div>
                 <p className="text-sm leading-relaxed text-muted-foreground group-hover:text-muted-foreground/80">
-                  In-depth technical articles, research papers, and
-                  comprehensive professional documentation.
+                  Updates on releases, events, and other notable news.
                 </p>
               </Link>
 
               <Link
-                href="/posts/stories"
+                href="/posts/general"
                 className="group block select-none rounded-xl p-6 leading-none no-underline outline-none transition-all duration-200 hover:bg-accent/50 hover:shadow-md focus:bg-accent focus:text-accent-foreground border border-transparent hover:border-border/50"
                 onClick={handleLinkClick}
               >
@@ -183,17 +190,16 @@ export function MainNav() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"
+                        d="M12 6v12m6-6H6"
                       />
                     </svg>
                   </div>
                   <div className="text-base font-medium leading-none group-hover:text-accent-foreground">
-                    Stories & Literary
+                    General Posts
                   </div>
                 </div>
                 <p className="text-sm leading-relaxed text-muted-foreground group-hover:text-muted-foreground/80">
-                  Creative fiction, poetry, short stories, narratives, and
-                  various literary explorations.
+                  Miscellaneous notes, thoughts, and assorted writing.
                 </p>
               </Link>
 

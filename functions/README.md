@@ -1,4 +1,4 @@
-# External Serverless Functions for Files Feature
+# External Serverless Functions (supers)
 
 This directory contains templates for external serverless functions that should be deployed separately from the main Next.js site.
 
@@ -49,7 +49,7 @@ Set these environment variables in your serverless function environment:
 AWS_ACCESS_KEY_ID=your_access_key
 AWS_SECRET_ACCESS_KEY=your_secret_key
 AWS_REGION=us-east-1
-AWS_S3_BUCKET_NAME=nuraweb-files
+AWS_S3_BUCKET_NAME=supers-files-your-suffix
 
 # Authentication
 JWT_SECRET=your-jwt-secret-key
@@ -68,7 +68,7 @@ Make sure your serverless functions have proper CORS headers:
 
 ```javascript
 const corsHeaders = {
-  'Access-Control-Allow-Origin': 'https://your-github-pages-site.github.io',
+  'Access-Control-Allow-Origin': 'https://your-frontend-domain',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Max-Age': '86400',
@@ -84,3 +84,13 @@ NEXT_PUBLIC_API_BASE_URL=https://your-serverless-api-domain.com/api
 ```
 
 The frontend will make API calls to your external serverless functions instead of local Next.js API routes.
+
+## S3 Helper Script
+
+From the repo root, run:
+
+```
+./scripts/setup-s3.sh supers-files-your-suffix
+```
+
+This creates the bucket and applies CORS and an optional read policy.

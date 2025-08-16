@@ -7,7 +7,7 @@ const client = new DynamoDBClient({
 });
 
 const docClient = DynamoDBDocumentClient.from(client);
-const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME || 'NuraWeb-Posts';
+const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME || 'Supers-Posts';
 
 // Helper function to generate ULID (URL-safe Lexicographically Sortable ID)
 const generateId = () => {
