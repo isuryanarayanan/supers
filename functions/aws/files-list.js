@@ -1,8 +1,8 @@
-const AWS = require('aws-sdk');
+const { S3Client, ListObjectsV2Command, HeadObjectCommand } = require('@aws-sdk/client-s3');
 const jwt = require('jsonwebtoken');
 
-// Configure AWS
-const s3 = new AWS.S3({
+// Configure AWS SDK v3
+const s3Client = new S3Client({
   region: process.env.AWS_REGION,
 });
 
@@ -55,7 +55,8 @@ exports.handler = async (event) => {
       MaxKeys: 1000,
     };
 
-    const data = await s3.listObjectsV2(params).promise();
+    const command = new ListObjectsV2Command(params);
+    const data = await s3Client.send(command);
 
     if (!data.Contents) {
       return {
@@ -79,7 +80,8 @@ exports.handler = async (event) => {
               Key: item.Key,
             };
 
-            const headData = await s3.headObject(headParams).promise();
+            const headCommand = new HeadObjectCommand(headParams);
+            const headData = await s3Client.send(headCommand);
             const metadata = headData.Metadata || {};
 
             // Skip deleted files

@@ -1,10 +1,10 @@
-const AWS = require('aws-sdk');
+const { S3Client, PutObjectCommand, HeadObjectCommand } = require('@aws-sdk/client-s3');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const parser = require('lambda-multipart-parser');
 
-// Configure AWS
-const s3 = new AWS.S3({
+// Configure AWS SDK v3
+const s3Client = new S3Client({
   region: process.env.AWS_REGION,
 });
 
@@ -13,7 +13,7 @@ const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
 // JWT middleware
 const verifyToken = (event) => {
   const authHeader = event.headers.Authorization || event.headers.authorization;
-  
+
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     throw new Error('No token provided');
   }
@@ -26,11 +26,11 @@ const verifyToken = (event) => {
 const validateFile = (file) => {
   const maxSize = parseInt(process.env.MAX_FILE_SIZE) || 50 * 1024 * 1024; // 50MB default
   const allowedTypes = (process.env.ALLOWED_FILE_TYPES || 'image/*,video/*,audio/*,application/pdf,text/*').split(',');
-  
+
   if (file.size > maxSize) {
     throw new Error(`File size exceeds ${maxSize / 1024 / 1024}MB limit`);
   }
-  
+
   const isAllowed = allowedTypes.some(type => {
     const trimmedType = type.trim();
     // Allow both wildcard (image/*) and specific (application/pdf) matches
@@ -40,7 +40,7 @@ const validateFile = (file) => {
     }
     return file.type.startsWith(trimmedType);
   });
-  
+
   if (!isAllowed) {
     throw new Error(`File type ${file.type} not allowed`);
   }
@@ -51,14 +51,14 @@ const ensureBinaryContent = (content, isBase64Encoded) => {
   if (Buffer.isBuffer(content)) {
     return content;
   }
-  
+
   if (typeof content === 'string') {
     if (isBase64Encoded) {
       return Buffer.from(content, 'base64');
     }
     return Buffer.from(content, 'binary');
   }
-  
+
   // If it's already a Uint8Array or similar, convert to Buffer
   return Buffer.from(content);
 };
@@ -103,7 +103,7 @@ exports.handler = async (event) => {
       ...event,
       body: body
     };
-    
+
     const result = await parser.parse(parseEvent);
     const uploadedFiles = [];
 
@@ -113,7 +113,7 @@ exports.handler = async (event) => {
       try {
         // Ensure we have proper binary content
         const fileContent = ensureBinaryContent(file.content, event.isBase64Encoded);
-        
+
         // Create a synthetic file object for validation
         const validationFile = {
           name: file.filename,
@@ -145,14 +145,18 @@ exports.handler = async (event) => {
           },
         };
 
-        const s3Response = await s3.upload(uploadParams).promise();
+        const uploadCommand = new PutObjectCommand(uploadParams);
+        const s3Response = await s3Client.send(uploadCommand);
 
-        console.log(`Successfully uploaded ${file.filename} to ${s3Response.Location}`);
+        // Construct the public URL
+        const publicUrl = `https://${BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${encodeURIComponent(uniqueKey)}`;
+
+        console.log(`Successfully uploaded ${file.filename} to ${publicUrl}`);
 
         uploadedFiles.push({
           id: uniqueKey,
           filename: file.filename,
-          url: s3Response.Location,
+          url: publicUrl,
           contentType: file.contentType,
           size: fileContent.length,
           uploadedBy: decoded.username,

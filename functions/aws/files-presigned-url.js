@@ -1,9 +1,10 @@
-const AWS = require('aws-sdk');
+const { S3Client, PutObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 
-// Configure AWS
-const s3 = new AWS.S3({
+// Configure AWS SDK v3
+const s3Client = new S3Client({
   region: process.env.AWS_REGION,
 });
 
@@ -12,9 +13,9 @@ const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
 // JWT middleware
 const verifyToken = (event) => {
   console.log('Verifying token...');
-  
+
   const authHeader = event.headers.Authorization || event.headers.authorization;
-  
+
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     console.log('No valid authorization header found');
     throw new Error('No token provided');
@@ -22,19 +23,19 @@ const verifyToken = (event) => {
 
   const token = authHeader.substring(7);
   console.log('Token length:', token.length);
-  
+
   if (!process.env.JWT_SECRET) {
     console.error('JWT_SECRET environment variable not set');
     throw new Error('JWT secret not configured');
   }
-  
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log('Token verified successfully for user:', decoded.username);
     return decoded;
   } catch (jwtError) {
     console.error('JWT verification failed:', jwtError.name, jwtError.message);
-    
+
     if (jwtError.name === 'TokenExpiredError') {
       throw new Error('Token expired');
     } else if (jwtError.name === 'JsonWebTokenError') {
@@ -49,11 +50,11 @@ const verifyToken = (event) => {
 const validateFileRequest = (fileInfo) => {
   const maxSize = parseInt(process.env.MAX_FILE_SIZE) || 50 * 1024 * 1024; // 50MB default
   const allowedTypes = (process.env.ALLOWED_FILE_TYPES || 'image/*,video/*,audio/*,application/pdf,text/*').split(',');
-  
+
   if (fileInfo.size > maxSize) {
     throw new Error(`File size exceeds ${maxSize / 1024 / 1024}MB limit`);
   }
-  
+
   const isAllowed = allowedTypes.some(type => {
     const trimmedType = type.trim();
     if (trimmedType.endsWith('/*')) {
@@ -62,7 +63,7 @@ const validateFileRequest = (fileInfo) => {
     }
     return fileInfo.contentType.startsWith(trimmedType);
   });
-  
+
   if (!isAllowed) {
     throw new Error(`File type ${fileInfo.contentType} not allowed`);
   }
@@ -109,26 +110,26 @@ exports.handler = async (event) => {
     let requestBody;
     try {
       // Check if body is base64 encoded
-      const bodyToParse = event.isBase64Encoded ? 
-        Buffer.from(event.body, 'base64').toString() : 
+      const bodyToParse = event.isBase64Encoded ?
+        Buffer.from(event.body, 'base64').toString() :
         event.body;
-      
+
       console.log('Body to parse:', bodyToParse);
       requestBody = JSON.parse(bodyToParse || '{}');
     } catch (parseError) {
       console.error('JSON parse error:', parseError.message);
       console.error('Raw body:', event.body);
       console.error('Is base64 encoded:', event.isBase64Encoded);
-      
+
       return {
         statusCode: 400,
         headers: {
           'Access-Control-Allow-Origin': process.env.ALLOWED_ORIGIN || '*',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           error: 'Invalid JSON in request body',
-          details: parseError.message 
+          details: parseError.message
         }),
       };
     }
@@ -157,7 +158,6 @@ exports.handler = async (event) => {
     const uploadParams = {
       Bucket: BUCKET_NAME,
       Key: uniqueKey,
-      Expires: 300, // 5 minutes
       ContentType: contentType,
       Metadata: {
         'original-filename': filename,
@@ -167,14 +167,15 @@ exports.handler = async (event) => {
       },
     };
 
-    const uploadUrl = await s3.getSignedUrlPromise('putObject', uploadParams);
+    const putObjectCommand = new PutObjectCommand(uploadParams);
+    const uploadUrl = await getSignedUrl(s3Client, putObjectCommand, { expiresIn: 3600 }); // 1 hour
 
     // Generate pre-signed URL for reading (for later access)
-    const readUrl = await s3.getSignedUrlPromise('getObject', {
+    const getObjectCommand = new GetObjectCommand({
       Bucket: BUCKET_NAME,
       Key: uniqueKey,
-      Expires: 86400, // 24 hours
     });
+    const readUrl = await getSignedUrl(s3Client, getObjectCommand, { expiresIn: 86400 }); // 24 hours
 
     return {
       statusCode: 200,
@@ -197,31 +198,31 @@ exports.handler = async (event) => {
   } catch (error) {
     console.error('Pre-signed URL generation error:', error.name, error.message);
     console.error('Stack trace:', error.stack);
-    
+
     // Determine appropriate status code based on error type
     let statusCode = 500;
     let errorMessage = error.message || 'An unexpected error occurred';
-    
-    if (error.message.includes('No token provided') || 
-        error.message.includes('Invalid token') || 
-        error.message.includes('Token expired') ||
-        error.message.includes('Token verification failed')) {
+
+    if (error.message.includes('No token provided') ||
+      error.message.includes('Invalid token') ||
+      error.message.includes('Token expired') ||
+      error.message.includes('Token verification failed')) {
       statusCode = 401;
-    } else if (error.message.includes('File size exceeds') || 
-               error.message.includes('File type') || 
-               error.message.includes('not allowed') ||
-               error.message.includes('Missing required fields') ||
-               error.message.includes('Invalid JSON')) {
+    } else if (error.message.includes('File size exceeds') ||
+      error.message.includes('File type') ||
+      error.message.includes('not allowed') ||
+      error.message.includes('Missing required fields') ||
+      error.message.includes('Invalid JSON')) {
       statusCode = 400;
     }
-    
+
     return {
       statusCode,
       headers: {
         'Access-Control-Allow-Origin': process.env.ALLOWED_ORIGIN || '*',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         error: errorMessage,
         type: error.name || 'UnknownError'
       }),

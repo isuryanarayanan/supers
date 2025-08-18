@@ -1,8 +1,8 @@
-const AWS = require('aws-sdk');
+const { S3Client, HeadObjectCommand, CopyObjectCommand } = require('@aws-sdk/client-s3');
 const jwt = require('jsonwebtoken');
 
-// Configure AWS
-const s3 = new AWS.S3({
+// Configure AWS SDK v3
+const s3Client = new S3Client({
   region: process.env.AWS_REGION,
 });
 
@@ -11,7 +11,7 @@ const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
 // JWT middleware
 const verifyToken = (event) => {
   const authHeader = event.headers.Authorization || event.headers.authorization;
-  
+
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     throw new Error('No token provided');
   }
@@ -51,7 +51,7 @@ exports.handler = async (event) => {
 
     // Get file ID from path parameters
     const fileId = event.pathParameters?.id;
-    
+
     if (!fileId) {
       return {
         statusCode: 400,
@@ -70,7 +70,8 @@ exports.handler = async (event) => {
     };
 
     try {
-      await s3.headObject(headParams).promise();
+      const headCommand = new HeadObjectCommand(headParams);
+      await s3Client.send(headCommand);
     } catch (error) {
       if (error.statusCode === 404) {
         return {
@@ -98,7 +99,8 @@ exports.handler = async (event) => {
       MetadataDirective: 'REPLACE',
     };
 
-    await s3.copyObject(copyParams).promise();
+    const copyCommand = new CopyObjectCommand(copyParams);
+    await s3Client.send(copyCommand);
 
     return {
       statusCode: 200,
@@ -106,14 +108,14 @@ exports.handler = async (event) => {
         'Access-Control-Allow-Origin': process.env.ALLOWED_ORIGIN || '*',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         message: 'File deleted successfully',
-        fileId: fileId 
+        fileId: fileId
       }),
     };
   } catch (error) {
     console.error('Error deleting file:', error);
-    
+
     if (error.name === 'JsonWebTokenError' || error.message === 'No token provided') {
       return {
         statusCode: 401,
