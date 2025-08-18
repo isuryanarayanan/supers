@@ -27,7 +27,14 @@ exports.handler = async (event, context) => {
     // Parse request body
     let postData;
     try {
-      postData = JSON.parse(event.body);
+      let bodyString = event.body;
+
+      // Handle base64 encoded body
+      if (event.isBase64Encoded) {
+        bodyString = Buffer.from(event.body, 'base64').toString('utf-8');
+      }
+
+      postData = JSON.parse(bodyString);
     } catch (error) {
       return {
         statusCode: 400,
@@ -107,9 +114,9 @@ exports.handler = async (event, context) => {
       type: newPost.type,
       thumbnail: newPost.thumbnail_url
         ? {
-            url: newPost.thumbnail_url,
-            alt: newPost.thumbnail_alt || "",
-          }
+          url: newPost.thumbnail_url,
+          alt: newPost.thumbnail_alt || "",
+        }
         : undefined,
       excerpt: newPost.excerpt,
       createdAt: newPost.created_at,

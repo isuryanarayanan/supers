@@ -7,3 +7,4 @@ decided to start sharing them here as a blog.
 Hoping you enjoy them.
 
 > This app is fully vibe coded, and you can take it and make yours if you need it.
+

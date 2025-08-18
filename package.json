@@ -5,7 +5,9 @@
   "scripts": {
     "dev:site": "next dev",
     "dev:api": "cd functions/aws && export STAGE=dev && export $(grep -E '^(AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY|AWS_SESSION_TOKEN|AWS_REGION)=' ../../aws/env/.env.dev | xargs) && npm run dev",
+    "deploy:api:dev": "cd functions/aws && export $(grep -E '^(AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY|AWS_SESSION_TOKEN|AWS_REGION)=' ../../aws/env/.env.deployment.dev | xargs) && npm run deploy:dev",
     "deploy:api:prod": "cd functions/aws && export $(grep -E '^(AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY|AWS_SESSION_TOKEN|AWS_REGION)=' ../../aws/env/.env.deployment.prod | xargs) && npm run deploy:prod",
+    "remove:api:dev": "cd functions/aws && export $(grep -E '^(AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY|AWS_SESSION_TOKEN|AWS_REGION)=' ../../aws/env/.env.deployment.dev | xargs) && npm run remove:dev",
     "remove:api:prod": "cd functions/aws && export $(grep -E '^(AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY|AWS_SESSION_TOKEN|AWS_REGION)=' ../../aws/env/.env.deployment.prod | xargs) && npm run remove:prod",
     "aws:check": "ENV=dev node aws/scripts/check-aws.js",
     "aws:check:prod": "ENV=production node aws/scripts/check-aws.js",

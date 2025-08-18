@@ -1,18 +1,21 @@
 // Loads runtime environment values for Lambdas based on stage
 const path = require('path');
 
-// Determine which env file to load based on stage
-const stage = process.env.SLS_STAGE || process.env.STAGE || 'dev';
-let envFile = '.env.production'; // default
+// Determine stage from environment variables set by serverless
+const stage = process.env.SLS_STAGE || process.env.SERVERLESS_STAGE || process.env.STAGE || 'production';
+
+let envFile = '.env.production'; // default for production
 
 if (stage === 'dev') {
     envFile = '.env.dev';
-} else if (stage === 'prod') {
+} else if (stage === 'prod' || stage === 'production') {
     envFile = '.env.production';
 }
 
+const envPath = path.resolve(__dirname, `../../aws/env/${envFile}`);
+
 require('dotenv').config({
-    path: path.resolve(__dirname, `../../aws/env/${envFile}`),
+    path: envPath,
 });
 
 module.exports = {
