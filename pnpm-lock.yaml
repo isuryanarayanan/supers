@@ -213,6 +213,9 @@ importers:
       '@aws-sdk/lib-dynamodb':
         specifier: ^3.600.0
         version: 3.868.0(@aws-sdk/client-dynamodb@3.868.0)
+      '@smithy/util-middleware':
+        specifier: ^3.0.3
+        version: 3.0.11
       busboy:
         specifier: ^1.6.0
         version: 1.6.0
@@ -1814,6 +1817,10 @@ packages:
     resolution: {integrity: sha512-x+MxBNOcG7rY9i5QsbdgvvRJngKKvUJrbU5R5bT66PTH3e6htSupJ4Q+kJ3E7t6q854jyl57acjpPi6qG1OY5g==}
     engines: {node: '>=18.0.0'}
 
+  '@smithy/types@3.7.2':
+    resolution: {integrity: sha512-bNwBYYmN8Eh9RyjS1p2gW6MIhSO2rl7X9QeLM8iTdcGRP+eDiIWDt66c9IysCc22gefKszZv+ubV9qZc7hdESg==}
+    engines: {node: '>=16.0.0'}
+
   '@smithy/types@4.3.1':
     resolution: {integrity: sha512-UqKOQBL2x6+HWl3P+3QqFD4ncKq0I8Nuz9QItGv5WuKuMHuuwlhvqcZCoXGfc+P1QmfJE7VieykoYYmrOoFJxA==}
     engines: {node: '>=18.0.0'}
@@ -1881,6 +1888,10 @@ packages:
   '@smithy/util-hex-encoding@4.0.0':
     resolution: {integrity: sha512-Yk5mLhHtfIgW2W2WQZWSg5kuMZCVbvhFmC7rV4IO2QqnZdbEFPmQnCcGMAX2z/8Qj3B9hYYNjZOhWym+RwhePw==}
     engines: {node: '>=18.0.0'}
+
+  '@smithy/util-middleware@3.0.11':
+    resolution: {integrity: sha512-dWpyc1e1R6VoXrwLoLDd57U1z6CwNSdkM69Ie4+6uYh2GC7Vg51Qtan7ITzczuVpqezdDTKJGJB95fFvvjU/ow==}
+    engines: {node: '>=16.0.0'}
 
   '@smithy/util-middleware@4.0.4':
     resolution: {integrity: sha512-9MLKmkBmf4PRb0ONJikCbCwORACcil6gUWojwARCClT7RmLzF04hUR4WdRprIXal7XVyrddadYNfp2eF3nrvtQ==}
@@ -8000,6 +8011,10 @@ snapshots:
       '@smithy/util-stream': 4.2.4
       tslib: 2.8.1
 
+  '@smithy/types@3.7.2':
+    dependencies:
+      tslib: 2.8.1
+
   '@smithy/types@4.3.1':
     dependencies:
       tslib: 2.8.1
@@ -8098,6 +8113,11 @@ snapshots:
 
   '@smithy/util-hex-encoding@4.0.0':
     dependencies:
+      tslib: 2.8.1
+
+  '@smithy/util-middleware@3.0.11':
+    dependencies:
+      '@smithy/types': 3.7.2
       tslib: 2.8.1
 
   '@smithy/util-middleware@4.0.4':
