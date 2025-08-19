@@ -11,10 +11,10 @@ export function Footer() {
       {/* Subtle gradient overlay for better blending with matrix background */}
       <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none dark:from-background/40" />
 
-      <div className="relative container max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex flex-col items-center text-center space-y-8">
+      <div className="relative container max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex flex-col items-center text-center space-y-4">
           {/* Social Media Section */}
-          <div className="space-y-4">
+          <div className="space-y-2">
             <h3 className="font-bold text-xl tracking-tight">Connect</h3>
             <div className="flex flex-wrap gap-4 justify-center">
               {/* <Button variant="outline" size="icon" asChild>
@@ -59,7 +59,7 @@ export function Footer() {
           </div>
         </div>
 
-        <Separator className="my-8" />
+        <Separator className="my-4" />
 
         <div className="text-center text-sm text-muted-foreground font-medium">
           © {new Date().getFullYear()} Surya Narayanan · supers

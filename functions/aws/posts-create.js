@@ -68,8 +68,6 @@ exports.handler = async (event, context) => {
     const validTypes = [
       "project",
       "blog",
-      "announcement",
-      "general",
     ];
     if (postData.type && !validTypes.includes(postData.type)) {
       return {

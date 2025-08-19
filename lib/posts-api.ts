@@ -56,8 +56,6 @@ class PostsApi {
     const allowed: ReadonlyArray<PostType> = [
       "project",
       "blog",
-      "announcement",
-      "general",
     ];
     return (allowed as readonly string[]).includes(input)
       ? (input as PostType)

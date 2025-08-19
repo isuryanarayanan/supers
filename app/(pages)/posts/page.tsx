@@ -78,7 +78,7 @@ export default function PostsPage() {
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2">Posts</h1>
         <p className="text-muted-foreground">
-          Explore the latest projects, blog posts, announcements, and more.
+          Explore the latest projects and blog posts.
         </p>
       </div>
 

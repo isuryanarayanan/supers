@@ -1,27 +1,27 @@
 // Auto-generated posts file
-// Version: v20250816-123532
-// Generated: 2025-08-16T12:35:33.083Z
+// Version: v20250818-221026
+// Generated: 2025-08-18T22:10:26.363Z
 // Source: API (http://localhost:3001/dev/posts - dev environment)
 
 import { Post } from "@/types/post";
 
 export const posts: Post[] = [
   {
-    "id": "MEDHCD5LK93F7D3XC4I",
+    "id": "MEHM2FJD1FORVZ00I9F",
     "title": "test",
     "slug": "test",
     "status": "published",
     "featured": true,
     "type": "project",
-    "excerpt": "test",
-    "createdAt": "2025-08-15T23:49:13.497Z",
-    "updatedAt": "2025-08-16T01:06:08.585Z",
+    "excerpt": "Thanks man, i really enjoy these types of videos, it litteraly saves me so often. Yesterday i was on a loose streak and couldnt even get past 0.6 kd, then i calmed down and watched this video i dont know how but the very next game i was the team mvp with cypher on heaven. Thank you.\n\n\n",
+    "createdAt": "2025-08-18T21:12:32.809Z",
+    "updatedAt": "2025-08-18T22:09:25.490Z",
     "viewCount": 0,
     "cells": [
       {
-        "id": "MEDK3ANOMQPVMPK6API",
+        "id": "MEHM2NORY1V9G5M7F",
         "type": "markdown",
-        "content": "## Heading 2\n### Heading 3\n**Bold text**\n*Italic text*\n[Link text](https://example.com)\n![Alt text](https://example.com/image.jpg)\n- Item 1\n- Item 2\n- Item 3\n```js\nconst hello = 'world';\nconsole.log(hello);\n```\n:::info\nThis is an info callout box.\n:::\n:::warning\nThis is a warning callout box.\n:::\n:::success\nThis is a success callout box.\n:::\ntest\n# Heading 1\n# Heading 1",
+        "content": "test\n## Heading 2\n# test",
         "order": 1
       }
     ]
@@ -29,8 +29,8 @@ export const posts: Post[] = [
 ];
 
 export const postsMetadata = {
-  version: "v20250816-123532",
-  generatedAt: "2025-08-16T12:35:33.083Z",
+  version: "v20250818-221026",
+  generatedAt: "2025-08-18T22:10:26.363Z",
   source: "api",
   environment: "dev",
   count: 1

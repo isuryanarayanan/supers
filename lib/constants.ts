@@ -2,8 +2,6 @@
 export const POST_TYPES = [
   { value: "project" as const, label: "Project" },
   { value: "blog" as const, label: "Blog" },
-  { value: "announcement" as const, label: "Announcement" },
-  { value: "general" as const, label: "General" },
 ] as const;
 
 // For filter dropdowns that include "all" option

@@ -14,15 +14,6 @@ interface ProjectPostCardProps {
   variant?: "default" | "compact";
 }
 
-function getPreviewContent(post: Post) {
-  const markdownCell = post.cells.find((cell) => cell.type === "markdown");
-  if (!markdownCell) return "";
-
-  const content = markdownCell.content as string;
-  const words = content.split(" ");
-  return words.slice(0, 50).join(" ") + (words.length > 50 ? "..." : "");
-}
-
 export function ProjectPostCard({
   post,
   variant = "default",
@@ -32,7 +23,7 @@ export function ProjectPostCard({
   const formattedDate = formatDistance(new Date(post.updatedAt), new Date(), {
     addSuffix: true,
   });
-  const previewContent = getPreviewContent(post);
+  const previewContent = post.excerpt || "";
   const isCompact = variant === "compact";
 
   useEffect(() => {
@@ -172,8 +163,8 @@ export function ProjectPostCard({
       className="w-full transition-all duration-500 hover:shadow-md dark:hover:shadow-primary/5 hover:scale-[1.005] transform-gpu"
     >
       <Link href={`/post/${post.id}`} className="block">
-        <CardContent className="px-4 py-3 md:px-5 md:py-4 flex flex-col h-full min-h-[200px]">
-          <div className="flex items-start justify-between gap-3 mb-1">
+        <CardContent className="px-4 py-3 md:px-5 md:py-4 flex flex-col">
+          <div className="flex items-start justify-between gap-3 mb-2">
             <div className="space-y-1 flex-1">
               <CardTitle className="transition-colors hover:text-primary text-xl font-bold leading-tight">
                 {post.title}
@@ -192,20 +183,20 @@ export function ProjectPostCard({
             </Button>
           </div>
 
+          {!isCompact && previewContent && (
+            <div className="mb-3">
+              <p className="text-muted-foreground line-clamp-3 leading-relaxed">
+                {previewContent}
+              </p>
+            </div>
+          )}
+
           {post.thumbnail && (
-            <div className="mt-3 flex-shrink-0">
+            <div className="flex-shrink-0">
               <ThumbnailCell
                 content={post.thumbnail}
                 className={isCompact ? "h-48" : "h-64 md:h-72"}
               />
-            </div>
-          )}
-
-          {!isCompact && previewContent && (
-            <div className={post.thumbnail ? "mt-3" : "mt-1"}>
-              <p className="text-muted-foreground line-clamp-3 leading-relaxed">
-                {previewContent}
-              </p>
             </div>
           )}
         </CardContent>

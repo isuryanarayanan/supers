@@ -25,7 +25,7 @@ const robotoMono = Roboto_Mono({
 export const metadata: Metadata = {
   title: "supers — Surya Narayanan",
   description:
-    "supers is the personal site of Surya Narayanan (Senior Software Engineer, WareIQ). Technical and artistic projects, posts, and announcements.",
+    "supers is the personal site of Surya Narayanan (Senior Software Engineer, WareIQ). Technical and artistic projects and blog posts.",
 };
 
 export default function RootLayout({
