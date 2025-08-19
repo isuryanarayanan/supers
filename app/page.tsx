@@ -41,7 +41,6 @@ export default function Home() {
               questionDelay={1500}
               answerDelay={800}
               className="text-lg md:text-xl lg:text-2xl leading-relaxed"
-              prompt="$ "
             />
           </div>
         </section>

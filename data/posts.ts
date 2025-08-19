@@ -1,6 +1,6 @@
 // Auto-generated posts file
-// Version: v20250818-221026
-// Generated: 2025-08-18T22:10:26.363Z
+// Version: v20250819-091202
+// Generated: 2025-08-19T09:12:02.170Z
 // Source: API (http://localhost:3001/dev/posts - dev environment)
 
 import { Post } from "@/types/post";
@@ -29,8 +29,8 @@ export const posts: Post[] = [
 ];
 
 export const postsMetadata = {
-  version: "v20250818-221026",
-  generatedAt: "2025-08-18T22:10:26.363Z",
+  version: "v20250819-091202",
+  generatedAt: "2025-08-19T09:12:02.170Z",
   source: "api",
   environment: "dev",
   count: 1
