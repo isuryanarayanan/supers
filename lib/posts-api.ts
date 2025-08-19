@@ -104,7 +104,7 @@ class PostsApi {
                   content = parsed;
                   break;
                 }
-              } catch (e) {
+              } catch {
                 break;
               }
             }
@@ -169,7 +169,7 @@ class PostsApi {
                     content = parsed;
                     break;
                   }
-                } catch (e) {
+                } catch {
                   break;
                 }
               }

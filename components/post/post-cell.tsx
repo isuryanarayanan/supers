@@ -26,7 +26,7 @@ export function PostCell({ cell }: PostCellProps) {
               parsed = newParsed;
               break;
             }
-          } catch (e) {
+          } catch {
             // If we can't parse anymore, break out of the loop
             break;
           }
