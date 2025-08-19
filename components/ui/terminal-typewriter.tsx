@@ -14,7 +14,6 @@ interface TerminalTypewriterProps {
   questionDelay?: number;
   answerDelay?: number;
   className?: string;
-  prompt?: string;
 }
 
 export function TerminalTypewriter({ 
@@ -22,8 +21,7 @@ export function TerminalTypewriter({
   typeSpeed = 25, 
   questionDelay = 1000,
   answerDelay = 500,
-  className = '',
-  prompt = '$ '
+  className = ''
 }: TerminalTypewriterProps) {
   const [displayedItems, setDisplayedItems] = useState<Array<{
     question: string;
