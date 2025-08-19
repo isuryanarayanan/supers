@@ -12,7 +12,27 @@ export function PostCell({ cell }: PostCellProps) {
   const parseContent = (content: string | object): object => {
     if (typeof content === 'string') {
       try {
-        return JSON.parse(content);
+        let parsed = content;
+        
+        // Handle multiple layers of JSON encoding by repeatedly parsing
+        // until we get an object or can't parse anymore
+        while (typeof parsed === 'string') {
+          try {
+            const newParsed = JSON.parse(parsed);
+            if (typeof newParsed === 'string' && newParsed !== parsed) {
+              parsed = newParsed;
+            } else {
+              // If we get an object or the string didn't change, we're done
+              parsed = newParsed;
+              break;
+            }
+          } catch (e) {
+            // If we can't parse anymore, break out of the loop
+            break;
+          }
+        }
+        
+        return typeof parsed === 'object' ? parsed : {};
       } catch (error) {
         console.error('Failed to parse cell content:', error);
         return {};

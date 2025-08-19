@@ -62,14 +62,14 @@ class PostsApi {
       : fallback;
   }
 
-  // Utility to fix escaped newlines in post content
+  // Utility to fix escaped content in post cells
   private processPostContent(post: Post): Post {
     if (!post || !post.cells) return post;
 
     return {
       ...post,
       // Normalize legacy types from older content
-  type: this.normalizeType((post as unknown as { type?: unknown })?.type, post.type),
+      type: this.normalizeType((post as unknown as { type?: unknown })?.type, post.type),
       cells: post.cells.map((cell: Cell) => {
         if (cell.type === "markdown" && typeof cell.content === "string") {
           let content = cell.content;
@@ -89,6 +89,34 @@ class PostsApi {
             ...cell,
             content,
           };
+        } else if ((cell.type === "image" || cell.type === "video" || cell.type === "file") && typeof cell.content === "string") {
+          // Handle JSON-encoded content for non-markdown cells
+          let content = cell.content;
+          
+          try {
+            // Handle multiple layers of JSON encoding
+            while (typeof content === 'string') {
+              try {
+                const parsed = JSON.parse(content);
+                if (typeof parsed === 'string' && parsed !== content) {
+                  content = parsed;
+                } else {
+                  content = parsed;
+                  break;
+                }
+              } catch (e) {
+                break;
+              }
+            }
+            
+            return {
+              ...cell,
+              content,
+            };
+          } catch (error) {
+            console.error('Failed to process cell content:', error);
+            return cell;
+          }
         }
         return cell;
       }),
@@ -126,6 +154,34 @@ class PostsApi {
               ...cell,
               content,
             };
+          } else if ((cell.type === "image" || cell.type === "video" || cell.type === "file") && typeof cell.content === "string") {
+            // Handle JSON-encoded content for non-markdown cells
+            let content = cell.content;
+            
+            try {
+              // Handle multiple layers of JSON encoding
+              while (typeof content === 'string') {
+                try {
+                  const parsed = JSON.parse(content);
+                  if (typeof parsed === 'string' && parsed !== content) {
+                    content = parsed;
+                  } else {
+                    content = parsed;
+                    break;
+                  }
+                } catch (e) {
+                  break;
+                }
+              }
+              
+              return {
+                ...cell,
+                content,
+              };
+            } catch (error) {
+              console.error('Failed to process static cell content:', error);
+              return cell;
+            }
           }
           return cell;
         }),

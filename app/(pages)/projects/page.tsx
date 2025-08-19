@@ -1,8 +1,12 @@
 import { posts } from "@/data/posts";
+import { PostsApi } from "@/lib/posts-api";
 import { PostCard } from "@/components/post/post-card";
 
+// Process static posts to handle encoding issues
+const processedPosts = PostsApi.processStaticPosts(posts);
+
 export default function ProjectsPage() {
-  const publishedPosts = posts.filter(
+  const publishedPosts = processedPosts.filter(
     (post) => post.status === "published" && post.type === "project"
   );
 

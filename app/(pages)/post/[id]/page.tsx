@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { posts } from "@/data/posts";
+import { PostsApi } from "@/lib/posts-api";
 import { PostCell } from "@/components/post/post-cell";
 import { formatDistance } from "date-fns";
 import Link from "next/link";
@@ -11,10 +12,13 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
-type Post = (typeof posts)[number];
+// Process static posts to handle encoding issues
+const processedPosts = PostsApi.processStaticPosts(posts);
+
+type Post = (typeof processedPosts)[number];
 
 function getPost(id: string): Post | undefined {
-  return posts.find((p) => p.id === id);
+  return processedPosts.find((p) => p.id === id);
 }
 
 // Validate and transform params to ensure they're sanitized
@@ -42,14 +46,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // Generate static params for all published posts
 export async function generateStaticParams() {
   // Handle case where posts array might be empty or undefined
-  if (!posts || posts.length === 0) {
+  if (!processedPosts || processedPosts.length === 0) {
     console.warn("No posts available for generateStaticParams - returning placeholder");
     // Return a placeholder param to satisfy Next.js static export requirements
     return [{ id: "placeholder" }];
   }
   
   // Filter out placeholder posts and only include published posts
-  const publishedPosts = posts.filter((post) => 
+  const publishedPosts = processedPosts.filter((post) => 
     post.status === "published" && post.id !== "placeholder"
   );
   
