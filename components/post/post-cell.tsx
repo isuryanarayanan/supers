@@ -9,17 +9,30 @@ interface PostCellProps {
 }
 
 export function PostCell({ cell }: PostCellProps) {
+  const parseContent = (content: any) => {
+    if (typeof content === 'string') {
+      try {
+        return JSON.parse(content);
+      } catch (error) {
+        console.error('Failed to parse cell content:', error);
+        return {};
+      }
+    }
+    return content;
+  };
+
   switch (cell.type) {
     case "markdown":
       return <MarkdownCell content={cell.content as string} />;
     case "image":
-      return (
-        <ImageCell content={cell.content as { url: string; alt: string }} />
-      );
+      const imageContent = parseContent(cell.content) as { url: string; alt: string };
+      return <ImageCell content={imageContent} />;
     case "video":
-      return <VideoCell content={cell.content as VideoContent} />;
+      const videoContent = parseContent(cell.content) as VideoContent;
+      return <VideoCell content={videoContent} />;
     case "file":
-      return <FileCell {...(cell.content as FileContent)} />;
+      const fileContent = parseContent(cell.content) as FileContent;
+      return <FileCell {...fileContent} />;
     default:
       return null;
   }

@@ -3,6 +3,7 @@
 import React from "react";
 import Markdown from "markdown-to-jsx";
 import Link from "next/link";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { InfoIcon, AlertTriangleIcon, CheckCircle } from "lucide-react";
@@ -153,22 +154,51 @@ function CustomLink({
 function CustomImage({ alt, src }: { alt?: string; src?: string }) {
   if (!src) return null;
 
-  return (
-    <div className="relative my-8 overflow-hidden rounded-lg">
-      {/* Note: For better performance, consider replacing this with next/image when possible */}
-      <img
-        src={src as string}
-        alt={alt || ""}
-        className="w-full h-auto rounded-md shadow-sm border border-border/50"
-        loading="lazy"
-      />
-      {alt && (
-        <p className="text-center text-xs text-muted-foreground mt-2 italic">
-          {alt}
-        </p>
-      )}
-    </div>
-  );
+  // Handle relative vs absolute URLs
+  const isAbsoluteUrl = src.startsWith('http://') || src.startsWith('https://') || src.startsWith('//');
+  
+  if (isAbsoluteUrl) {
+    // For external images, use Next.js Image component
+    return (
+      <div className="relative my-8 overflow-hidden rounded-lg">
+        <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
+          <Image
+            src={src}
+            alt={alt || ""}
+            fill
+            className="object-contain rounded-md shadow-sm border border-border/50"
+            sizes="(min-width: 1280px) 1200px, (min-width: 780px) 720px, 100vw"
+            unoptimized={true}
+          />
+        </div>
+        {alt && (
+          <p className="text-center text-xs text-muted-foreground mt-2 italic">
+            {alt}
+          </p>
+        )}
+      </div>
+    );
+  } else {
+    // For relative paths, use regular img tag with base path handling
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+    const imageSrc = basePath + (src.startsWith('/') ? src : '/' + src);
+    
+    return (
+      <div className="relative my-8 overflow-hidden rounded-lg">
+        <img
+          src={imageSrc}
+          alt={alt || ""}
+          className="w-full h-auto rounded-md shadow-sm border border-border/50"
+          loading="lazy"
+        />
+        {alt && (
+          <p className="text-center text-xs text-muted-foreground mt-2 italic">
+            {alt}
+          </p>
+        )}
+      </div>
+    );
+  }
 }
 
 // Custom callout components

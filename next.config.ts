@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "supers-isuryanarayanan-prod.s3.ap-south-1.amazonaws.com",
+        pathname: "**",
+      },
     ],
     unoptimized: true,
   },
