@@ -9,7 +9,7 @@ interface PostCellProps {
 }
 
 export function PostCell({ cell }: PostCellProps) {
-  const parseContent = (content: any) => {
+  const parseContent = (content: string | object): object => {
     if (typeof content === 'string') {
       try {
         return JSON.parse(content);
