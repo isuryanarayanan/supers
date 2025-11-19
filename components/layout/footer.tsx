@@ -6,11 +6,9 @@ import { Github, Instagram, Mail } from "lucide-react";
 import Link from "next/link";
 
 export function Footer() {
+  return <footer></footer>;
   return (
-    <footer className="relative z-10 mt-auto border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-      {/* Subtle gradient overlay for better blending with matrix background */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none dark:from-background/40" />
-
+    <footer className="relative z-10 mt-auto">
       <div className="relative container max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col items-center text-center space-y-4">
           {/* Social Media Section */}
@@ -28,13 +26,21 @@ export function Footer() {
                 </Link>
               </Button> */}
               <Button variant="outline" size="icon" asChild>
-                <Link href="https://github.com/isuryanarayanan" target="_blank" rel="noopener noreferrer">
+                <Link
+                  href="https://github.com/isuryanarayanan"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Github className="h-4 w-4" />
                   <span className="sr-only">GitHub</span>
                 </Link>
               </Button>
               <Button variant="outline" size="icon" asChild>
-                <Link href="https://instagram.com/" target="_blank" rel="noopener noreferrer">
+                <Link
+                  href="https://instagram.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Instagram className="h-4 w-4" />
                   <span className="sr-only">Instagram</span>
                 </Link>

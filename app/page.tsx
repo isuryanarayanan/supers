@@ -1,49 +1,47 @@
-import WarpFbmBackground from "@/components/ui/warp-fbm-background";
-import { TerminalTypewriter } from "@/components/ui/terminal-typewriter";
+import MatrixShaderBackground from "@/components/ui/matrix-shader-background";
 
 export default function Home() {
-  const terminalQA = [
-    {
-      question: "whoami",
-      answer: "Surya Narayanan"
-    },
-    {
-      question: "cat /proc/occupation",
-      answer: "Senior Software Engineer at WareIQ"
-    },
-    {
-      question: "ls -la /skills/languages/",
-      answer: "Golang, Python, TypeScript"
-    },
-    {
-      question: "cat /interests/current.txt",
-      answer: "DevOps, Design, Software Architecture"
-    },
-    {
-      question: "tail -f /learning/now.log",
-      answer: "Learning circuits and embedded systems"
-    }
-  ];
-
   return (
     <>
-      {/* Full-screen Warp fBM Shader Background - only visible in dark mode */}
-      <WarpFbmBackground className="dark:block hidden" />
+      {/* Full-screen Matrix Shader Background with integrated text */}
+      <MatrixShaderBackground
+        className="dark:block hidden"
+        name="Surya Narayanan"
+        title="Senior Software Engineer at WareIQ"
+        skills="Golang • Python • TypeScript"
+        interests="DevOps • Design • Software Architecture"
+      />
 
-      {/* Content */}
-      <div className="flex flex-col gap-20 md:gap-28 lg:gap-32">
-        {/* Hero Section */}
-        <section className="relative flex flex-col items-start justify-center gap-8 py-16 md:py-20 lg:py-24 pl-8 md:pl-16 lg:pl-24">
-          <div className="relative z-10">
-            <TerminalTypewriter 
-              qaItems={terminalQA}
-              typeSpeed={12}
-              questionDelay={1500}
-              answerDelay={800}
-              className="text-lg md:text-xl lg:text-2xl leading-relaxed"
-            />
-          </div>
-        </section>
+      {/* Social Links */}
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-10 pointer-events-auto animate-fade-in-1000">
+        <div className="flex items-center gap-6 text-gray-400">
+          <a
+            href="https://github.com/isuryanarayanan"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white transition-colors duration-200"
+          >
+            GitHub
+          </a>
+          <span className="text-gray-600">•</span>
+          <a
+            href="https://instagram.com/0xsuryan"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white transition-colors duration-200"
+          >
+            Instagram
+          </a>
+          <span className="text-gray-600">•</span>
+          <a
+            href="https://www.linkedin.com/in/surya-narayanan-25bbb8168/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white transition-colors duration-200"
+          >
+            LinkedIn
+          </a>
+        </div>
       </div>
     </>
   );
