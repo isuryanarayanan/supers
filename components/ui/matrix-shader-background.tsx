@@ -88,6 +88,7 @@ function MatrixShaderPlane() {
     uniform vec3 uColorA;
     uniform vec3 uColorB;
     uniform vec3 uColorC;
+    uniform vec3 uColorD;
     uniform float uFadeIn;
     
     varying vec2 vUv;
@@ -187,17 +188,23 @@ function MatrixShaderPlane() {
       float grain = random(warpedUv * 4.0 + mod(uTime, 10.0));
       
       // 5. Color Mixing
-      // Mix Background (Black) -> Trail (Dark Grey)
-      vec3 color = mix(uColorA, uColorB, pattern * 1.5);
+      // Determine if this particle should be red (5% chance)
+      float isRed = step(0.999, random(vec2(colId, rowId)));
       
-      // Add Highlights (Lighter Gray/Silver)
+      // Mix Background (Black) -> Trail (Dark Grey or Dark Red)
+      vec3 trailColor = mix(uColorB, uColorD * 0.3, isRed);
+      vec3 color = mix(uColorA, trailColor, pattern * 1.5);
+      
+      // Add Highlights (Lighter Gray/Silver or Red)
       // The "Head" of the rain drops or random bright glitches
       float highlight = smoothstep(0.8, 1.0, pattern * noiseVal);
       
       // Mouse interaction lighting
       highlight += distortionStrength * 0.4 * random(warpedUv + uTime); 
       
-      color = mix(color, uColorC, highlight);
+      // Mix in the highlight color (red particles stay red, others gray)
+      vec3 highlightColor = mix(uColorC, uColorD, isRed);
+      color = mix(color, highlightColor, highlight);
 
       // Apply grainy texture to the whole image
       color += (grain - 0.5) * 0.12;
@@ -221,10 +228,11 @@ function MatrixShaderPlane() {
       uMouse: { value: new THREE.Vector2(0.5, 0.5) },
       uResolution: { value: new THREE.Vector2(size.width, size.height) },
       uFadeIn: { value: 0 },
-      // Monochrome Matrix Palette - Black & Light Gray
+      // Matrix Palette with subtle red accents
       uColorA: { value: new THREE.Color("#000000") }, // Pure Black Background
-      uColorB: { value: new THREE.Color("#202020") }, // Dark Code Trails
-      uColorC: { value: new THREE.Color("#C0C0C0") }, // Light Silver/Gray Highlights
+      uColorB: { value: new THREE.Color("#202020") }, // Dark Gray Trails
+      uColorC: { value: new THREE.Color("#C0C0C0") }, // Light Gray Highlights
+      uColorD: { value: new THREE.Color("#ff4444") }, // Red for accented boxes
     }),
     [size]
   );
