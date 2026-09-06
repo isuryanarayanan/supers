@@ -1,7 +1,7 @@
 // Auto-generated posts file
-// Version: v20250819-165754
-// Generated: 2025-08-19T16:57:55.289Z
-// Source: API (http://localhost:3001/dev/posts - dev environment)
+// Version: v20260906-101845
+// Generated: 2026-09-06T10:18:46.651Z
+// Source: API (https://zrzucmu4zl.execute-api.ap-south-1.amazonaws.com/prod/posts - prod environment)
 
 import { Post } from "@/types/post";
 
@@ -105,9 +105,9 @@ export const posts: Post[] = [
 ];
 
 export const postsMetadata = {
-  version: "v20250819-165754",
-  generatedAt: "2025-08-19T16:57:55.289Z",
+  version: "v20260906-101845",
+  generatedAt: "2026-09-06T10:18:46.651Z",
   source: "api",
-  environment: "dev",
+  environment: "prod",
   count: 1
 };

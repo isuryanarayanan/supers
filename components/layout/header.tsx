@@ -4,12 +4,12 @@ import { MobileNav } from "@/components/layout/mobile-nav";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
-      <div className="flex h-16 items-center justify-between px-4 md:px-6 w-full">
+    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/65">
+      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 md:px-6">
         {/* Logo on the left */}
         <div className="flex items-center">
           <Link href="/" className="flex items-center space-x-2" aria-label="supers home">
-            <span className="text-2xl md:text-3xl font-black text-foreground tracking-tight">
+            <span className="font-mono text-xl font-black tracking-[-0.08em] text-foreground md:text-2xl">
               supers
             </span>
           </Link>

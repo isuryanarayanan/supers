@@ -199,7 +199,7 @@ async function fetchPostsFromAPI() {
       console.error("");
       console.error("💡 API server appears to be down. Please start it with:");
       if (API_STAGE === "dev") {
-        console.error("   npm run dev:api");
+        console.error("   pnpm run dev:api");
         console.error("   or");
         console.error(
           '   cd functions/aws && export $(cat .env | grep -v "^#" | xargs) && npm run dev'
@@ -343,10 +343,11 @@ function cleanOldBackups() {
 
 // Main build function
 async function buildPosts() {
+  const versionTag = generateVersionTag();
+
   try {
     console.log("🚀 Starting posts build process...");
 
-    const versionTag = generateVersionTag();
     console.log(`🏷️  Build version: ${versionTag}`);
 
     // Backup existing posts.ts

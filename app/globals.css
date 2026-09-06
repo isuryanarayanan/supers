@@ -169,9 +169,29 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--foreground) 18%, transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 
   /* Typography improvements */
@@ -225,12 +245,14 @@
 
   /* Improve readability for body text */
   .prose {
-    line-height: 1.7;
-    font-size: 1rem;
+    line-height: 1.78;
+    font-size: 1.03rem;
+    letter-spacing: -0.006em;
   }
 
   .prose p {
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.35rem;
+    color: color-mix(in oklab, var(--foreground) 88%, var(--muted-foreground));
   }
 
   .prose h1,

@@ -106,8 +106,16 @@ export function PostsManager({
 
     try {
       if (authToken && isAdmin) {
-        // Save to API
-        await postsApi.updatePost(editingPostVisual.id, editingPostVisual);
+        // Save an explicit payload; PUT currently returns a partial post.
+        await postsApi.updatePost(editingPostVisual.id, {
+          title: editingPostVisual.title,
+          status: editingPostVisual.status,
+          featured: editingPostVisual.featured,
+          type: editingPostVisual.type,
+          excerpt: editingPostVisual.excerpt,
+          thumbnail: editingPostVisual.thumbnail,
+          cells: editingPostVisual.cells,
+        });
         toast.success("Post saved successfully!");
       }
 
