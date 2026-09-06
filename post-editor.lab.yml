@@ -1,9 +1,8 @@
 name: post-editor
 title: Post Editor
 type: research
-status: draft
-description: Rethink the admin post editor for low-friction cell-based writing without
-  changing post data formats.
+status: active
+description: Rethink the admin post editor for low-friction cell-based writing without changing post data formats.
 created_at: '2026-09-06T10:07:08.812783Z'
 created_by: suryan
 tags:
@@ -11,7 +10,8 @@ tags:
 - admin
 - editor
 pi:
-  system_prompt: ''
+  system_prompt: |
+    This lab owns the admin post creation/editing experience. Keep the existing post and cell data formats intact. Do not replace the cell model; make it easier to author, reorder, preview, save, and publish cells without hidden mutations or backend contract changes.
   extensions: []
   skills: []
   agents: []
@@ -20,8 +20,36 @@ claude:
   add_dirs: []
   mcp_config: ''
 context:
-  goals: []
-  hypothesis: ''
-  notes: ''
-  references: []
-  constraints: []
+  goals:
+  - Make creating and editing posts feel fast, obvious, and hard to break.
+  - Preserve the existing Post and Cell shapes used by frontend, backend, DynamoDB, and static generation.
+  - Keep cells as the structural unit while making insertion, editing, reordering, media selection, and preview seamless.
+  - Add guardrails: local recovery, unsaved-change safety, validation, save states, and data-format checks.
+  - Improve admin ergonomics without affecting public rendering or deployment reliability.
+  hypothesis: |
+    The editor will feel much better if it becomes a focused writing workspace: document metadata in a compact inspector, cell blocks in the center, live preview on demand or side-by-side, fast keyboard insertion, media picker integration, and explicit save/publish controls.
+  notes: |
+    Current implementation already has working API CRUD, protected admin pages, dnd-kit sortable cells, markdown preview, and file upload/browser. The main gap is experience architecture: creating a post is separate from editing content, the visual editor is modal-heavy, media is URL-paste driven, autosave/recovery is missing, and cell operations are basic.
+  references:
+  - components/post/posts-manager.tsx
+  - components/editor/visual-editor.tsx
+  - components/editor/markdown-editor.tsx
+  - components/files/file-browser.tsx
+  - components/files/file-card.tsx
+  - components/post/post-cell.tsx
+  - types/post.ts
+  - lib/posts-api.ts
+  - functions/aws/db.js
+  - functions/aws/posts-create.js
+  - functions/aws/posts-update.js
+  - .viki/labs/post-editor/backend-api-notes.md
+  - https://www.notion.com/help/keyboard-shortcuts
+  - https://www.portabletext.org/editor/guides/customize-toolbar/
+  - https://www.sanity.io/docs/studio/portable-text-editor-configuration
+  constraints:
+  - Do not remove the cell structure.
+  - Do not change stored post/cell shapes unless a compatibility migration and renderer fallback exist.
+  - Keep valid cell types: markdown, image, video, file.
+  - Existing S3 file URLs and file records must remain usable.
+  - Builds must continue to pass without the local API server.
+  - Admin changes should not degrade public reading pages.
