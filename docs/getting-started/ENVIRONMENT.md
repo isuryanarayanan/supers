@@ -62,7 +62,7 @@ ADMIN_PASSWORD=your-secure-admin-password
 ALLOWED_ORIGIN=https://your-domain.com
 
 # File Upload Settings
-MAX_FILE_SIZE=52428800
+MAX_FILE_SIZE=1073741824
 ALLOWED_FILE_TYPES=image/*,video/*,audio/*,application/pdf,text/*
 
 # Optional: Local DynamoDB (for development)
@@ -86,7 +86,7 @@ ALLOWED_FILE_TYPES=image/*,video/*,audio/*,application/pdf,text/*
 - **Multiple origins**: Use comma-separated values for multiple domains
 
 #### File Upload
-- **`MAX_FILE_SIZE`**: Maximum file size in bytes (default: 50MB = 52428800)
+- **`MAX_FILE_SIZE`**: Maximum file size in bytes (default: 1GB = 1073741824)
 - **`ALLOWED_FILE_TYPES`**: MIME types allowed for upload (comma-separated)
 
 ### Environment-Specific Configurations
@@ -100,7 +100,7 @@ JWT_SECRET=dev-jwt-secret-for-testing-only-not-for-production-use
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=devpassword123
 ALLOWED_ORIGIN=http://localhost:3000
-MAX_FILE_SIZE=52428800
+MAX_FILE_SIZE=1073741824
 ALLOWED_FILE_TYPES=image/*,video/*,audio/*,application/pdf,text/*
 
 # Optional: Use local DynamoDB
@@ -116,7 +116,7 @@ JWT_SECRET=super-secure-production-jwt-secret-with-64-plus-characters-for-maximu
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=SecureProductionPassword123!
 ALLOWED_ORIGIN=https://your-production-domain.com,https://your-domain.github.io
-MAX_FILE_SIZE=52428800
+MAX_FILE_SIZE=1073741824
 ALLOWED_FILE_TYPES=image/*,video/*,audio/*,application/pdf,text/*
 ```
 

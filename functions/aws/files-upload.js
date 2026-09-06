@@ -24,7 +24,7 @@ const verifyToken = (event) => {
 
 // File validation
 const validateFile = (file) => {
-  const maxSize = parseInt(process.env.MAX_FILE_SIZE) || 50 * 1024 * 1024; // 50MB default
+  const maxSize = parseInt(process.env.MAX_FILE_SIZE) || 1024 * 1024 * 1024; // 1GB default
   const allowedTypes = (process.env.ALLOWED_FILE_TYPES || 'image/*,video/*,audio/*,application/pdf,text/*').split(',');
 
   if (file.size > maxSize) {

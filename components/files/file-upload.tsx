@@ -47,11 +47,14 @@ export function FileUpload({ onUploadComplete }: FileUploadProps) {
   };
 
   const validateFile = (file: File): string | null => {
-    const maxSize = 50 * 1024 * 1024; // 50MB
+    const maxSize = Number(process.env.NEXT_PUBLIC_MAX_FILE_SIZE || 1024 * 1024 * 1024); // 1GB default
+    const maxSizeLabel = maxSize >= 1024 * 1024 * 1024
+      ? `${maxSize / 1024 / 1024 / 1024}GB`
+      : `${maxSize / 1024 / 1024}MB`;
     const allowedTypes = ['image/', 'video/', 'audio/', 'application/pdf', 'text/'];
     
     if (file.size > maxSize) {
-      return 'File size exceeds 50MB limit';
+      return `File size exceeds ${maxSizeLabel} limit`;
     }
     
     if (!allowedTypes.some(type => file.type.startsWith(type))) {
@@ -212,7 +215,7 @@ export function FileUpload({ onUploadComplete }: FileUploadProps) {
                 </label>
               </Button>
               <p className="text-sm text-muted-foreground">
-                Maximum file size: 50MB. Supported: Images, Videos, Audio, PDF, Text
+                Maximum file size: 1GB. Supported: Images, Videos, Audio, PDF, Text
               </p>
             </div>
           </div>

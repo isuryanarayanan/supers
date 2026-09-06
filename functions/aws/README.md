@@ -73,7 +73,7 @@ In each Lambda function, add these environment variables:
 - `AWS_SECRET_ACCESS_KEY`: S3 secret key
 - `AWS_REGION`: S3 region (e.g., `us-east-1`)
 - `AWS_S3_BUCKET_NAME`: Your S3 bucket name
-- `MAX_FILE_SIZE`: Maximum file size in bytes (default: 52428800 = 50MB)
+- `MAX_FILE_SIZE`: Maximum file size in bytes (default: 1073741824 = 1GB)
 - `ALLOWED_FILE_TYPES`: Comma-separated list of allowed MIME types
 
 ### 5. Set Up API Gateway

@@ -1,5 +1,5 @@
 export function validateFile(file: File): { valid: boolean; error?: string } {
-  const maxSize = parseInt(process.env.MAX_FILE_SIZE || '52428800'); // 50MB default
+  const maxSize = parseInt(process.env.MAX_FILE_SIZE || '1073741824'); // 1GB default
   const allowedTypes = process.env.ALLOWED_FILE_TYPES?.split(',') || [
     'image/*',
     'video/*',

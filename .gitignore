@@ -32,6 +32,10 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+!.env.production.local.example
+!aws/env/.env.example
+!aws/env/.env.deployment.example
 
 # vercel
 .vercel
@@ -56,3 +60,4 @@ data/build-manifest.json
 
 venv/
 node_modules/
+.viki

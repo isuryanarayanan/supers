@@ -57,7 +57,7 @@ ADMIN_USERNAME=admin
 ADMIN_PASSWORD=your-secure-password
 
 # File Upload Configuration
-MAX_FILE_SIZE=52428800
+MAX_FILE_SIZE=1073741824
 ALLOWED_FILE_TYPES=image/*,video/*,audio/*,application/pdf,text/*
 JWT_EXPIRES_IN=24h
 ```

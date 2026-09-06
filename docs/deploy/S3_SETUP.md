@@ -101,7 +101,7 @@ Add to your environment files (`aws/env/.env.dev`, `aws/env/.env.production`):
 ```env
 AWS_S3_BUCKET_NAME=supers-files-your-suffix
 AWS_REGION=ap-south-1
-MAX_FILE_SIZE=52428800
+MAX_FILE_SIZE=1073741824
 ALLOWED_FILE_TYPES=image/*,video/*,audio/*,application/pdf,text/*
 ```
 

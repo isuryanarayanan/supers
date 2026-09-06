@@ -41,7 +41,7 @@ ADMIN_PASSWORD=your-secure-password
 ALLOWED_ORIGIN=https://your-domain.com
 
 # File Upload Settings
-MAX_FILE_SIZE=52428800
+MAX_FILE_SIZE=1073741824
 ALLOWED_FILE_TYPES=image/*,video/*,audio/*,application/pdf,text/*
 ```
 
