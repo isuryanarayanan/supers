@@ -1,0 +1,4 @@
+# Viki workspace files
+.viki/logs/
+.viki/cache/
+.viki/.tmp/
