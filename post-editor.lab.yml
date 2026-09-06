@@ -1,0 +1,27 @@
+name: post-editor
+title: Post Editor
+type: research
+status: draft
+description: Rethink the admin post editor for low-friction cell-based writing without
+  changing post data formats.
+created_at: '2026-09-06T10:07:08.812783Z'
+created_by: suryan
+tags:
+- ui
+- admin
+- editor
+pi:
+  system_prompt: ''
+  extensions: []
+  skills: []
+  agents: []
+claude:
+  model: ''
+  add_dirs: []
+  mcp_config: ''
+context:
+  goals: []
+  hypothesis: ''
+  notes: ''
+  references: []
+  constraints: []
