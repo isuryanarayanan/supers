@@ -67,7 +67,7 @@ function showApiStartInstructions() {
   console.log('   export $(cat .env | grep -v "^#" | xargs) && npm run dev');
   console.log('');
   console.log('   Or use the npm script:');
-  console.log('   npm run dev:api');
+  console.log('   pnpm run dev:api');
   console.log('');
 }
 

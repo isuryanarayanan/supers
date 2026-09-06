@@ -35,9 +35,10 @@ Next.js App Router + TypeScript + Tailwind + Shadcn. Optional AWS serverless (La
 - Backend (optional): DynamoDB (`Supers-Posts`) + S3 via Lambda/API Gateway.
 - Theme is env-only: `NEXT_PUBLIC_DEFAULT_THEME`.
 - GitHub Pages base path: `NEXT_PUBLIC_BASE_PATH`.
+- Frontend deploy has two paths: Actions workflow or manual `gh-pages` branch via `pnpm run deploy:pages:branch`.
 
 ## env vars (by intent)
-- Frontend: `NEXT_PUBLIC_API_BASE_URL`, `NEXT_PUBLIC_DEFAULT_THEME`, `NEXT_PUBLIC_BASE_PATH`
+- Frontend: `NEXT_PUBLIC_API_BASE_URL`, `NEXT_PUBLIC_DEFAULT_THEME`, `NEXT_PUBLIC_BASE_PATH`, `NEXT_PUBLIC_MAX_FILE_SIZE`
 - AWS core: `AWS_REGION`, `DYNAMODB_TABLE_NAME`, `AWS_S3_BUCKET_NAME`
 - Auth: `JWT_SECRET`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`
 - CORS/uploads: `ALLOWED_ORIGIN`, `MAX_FILE_SIZE`, `ALLOWED_FILE_TYPES`
@@ -46,6 +47,7 @@ Next.js App Router + TypeScript + Tailwind + Shadcn. Optional AWS serverless (La
 - “check aws / services up” → `aws/scripts/check-aws.js` (uses `aws/env/.env.dev|.production`)
 - “create dynamodb / s3” → `aws/scripts/dynamodb-init.js`, `aws/scripts/s3-init.js`; configs in `aws/config/*`; policies in `aws/iam/*`
 - “deploy serverless / functions” → code: `functions/aws/`; how-to: `docs/deploy/FUNCTIONS_AWS.md`
+- “deploy frontend / GitHub Pages” → preferred fallback command: `pnpm run deploy:pages:branch`; docs: `docs/deploy/GITHUB_PAGES.md`; keep Actions workflow too
 - “update iam permissions” → `aws/iam/deployment.json` (provisioning), `aws/iam/functions.json` (runtime)
 - “content types / editor / cells” → `docs/content-management.md`, `docs/content/POST_TYPES.md`, `components/editor/*`, `components/post/*`
 - “api endpoints” → `docs/api/POSTS_API.md`, `docs/api/FILES_API.md`

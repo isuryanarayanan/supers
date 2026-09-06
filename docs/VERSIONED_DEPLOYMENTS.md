@@ -56,50 +56,50 @@ scripts/
 
 ```bash
 # Start development servers
-npm run dev:site                # Next.js development server
-npm run dev:api                 # API server (Lambda functions)
+pnpm run dev:site                # Next.js development server
+pnpm run dev:api                 # API server (Lambda functions)
 
 # API health check
-npm run build:check             # Check if API is accessible
+pnpm run build:check             # Check if API is accessible
 
 # Sync posts only
-npm run build:posts             # Fetch posts from API and create version
+pnpm run build:posts             # Fetch posts from API and create version
 ```
 
 ### Build Commands
 
 ```bash
 # Standard build (includes automatic posts sync)
-npm run build                   # Next.js build with prebuild posts sync
+pnpm run build                   # Next.js build with prebuild posts sync
 
 # Full deployment build
-npm run deploy                  # Complete versioned deployment
-npm run build:full              # Alias for deploy
+pnpm run deploy                  # Complete versioned deployment
+pnpm run build:full              # Alias for deploy
 
 # Partial builds
-npm run deploy:posts-only       # Only sync posts, no Next.js build
-npm run deploy:build-only       # Only Next.js build, no API sync
+pnpm run deploy:posts-only       # Only sync posts, no Next.js build
+pnpm run deploy:build-only       # Only Next.js build, no API sync
 ```
 
 ### Version Management
 
 ```bash
 # List all available versions
-npm run versions:list
-npm run versions list
+pnpm run versions:list
+pnpm run versions list
 
 # Show current status
-npm run versions:status
-npm run versions status
+pnpm run versions:status
+pnpm run versions status
 
 # Compare two versions
-npm run versions diff v20250802-143022 v20250802-143045
+pnpm run versions diff v20250802-143022 v20250802-143045
 
 # Restore to a specific version
-npm run versions restore v20250802-143022
+pnpm run versions restore v20250802-143022
 
 # Show help
-npm run versions help
+pnpm run versions help
 ```
 
 ## Version Tag Format
@@ -144,15 +144,23 @@ JWT_SECRET=your_jwt_secret
 
 ## CI/CD Integration
 
-### GitHub Actions Workflow
+### GitHub Actions and Pages Workflows
 
-The `.github/workflows/versioned-deploy.yml` provides:
+The `.github/workflows/deploy.yml` workflow provides GitHub Pages deployment when Actions is available:
 
 1. **Automatic Deployment**: Triggered on push to main
 2. **Manual Deployment**: Manual trigger with options
-3. **Version Tagging**: Automatic Git tags for deployments
-4. **Artifact Upload**: Build artifacts and version backups
+3. **Content Sync**: Fetches posts from the configured API
+4. **Artifact Upload**: Uploads the static `out/` artifact
 5. **GitHub Pages**: Automatic deployment to Pages
+
+When Actions cannot run, use the manual branch fallback:
+
+```bash
+pnpm run deploy:pages:branch
+```
+
+This builds locally and pushes the static `out/` directory to the `gh-pages` branch. See [GitHub Pages Deployment](./deploy/GITHUB_PAGES.md).
 
 #### Manual Deployment Options
 
@@ -243,23 +251,23 @@ interface Post {
 ### Development Workflow
 
 1. **API First**: Ensure API is running before building
-2. **Version Check**: Use `npm run versions:status` to check current state
-3. **Incremental Builds**: Use `npm run build:posts` for quick API sync
+2. **Version Check**: Use `pnpm run versions:status` to check current state
+3. **Incremental Builds**: Use `pnpm run build:posts` for quick API sync
 4. **Test Locally**: Always test builds locally before deployment
 
 ### Production Deployment
 
-1. **Full Deployment**: Use `npm run deploy` for complete builds
+1. **Full Deployment**: Use `pnpm run deploy` for complete builds
 2. **Version Tagging**: Each production build creates a Git tag
 3. **Artifact Backup**: All builds are backed up for rollback
 4. **Health Monitoring**: Monitor API connectivity during builds
 
 ### Troubleshooting
 
-1. **API Issues**: Use `npm run build:check` to verify API health
-2. **Version Conflicts**: Use `npm run versions:list` to see available versions
-3. **Rollback**: Use `npm run versions restore <version>` for quick recovery
-4. **Clean Build**: Delete `.next/` and run fresh `npm run deploy`
+1. **API Issues**: Use `pnpm run build:check` to verify API health
+2. **Version Conflicts**: Use `pnpm run versions:list` to see available versions
+3. **Rollback**: Use `pnpm run versions restore <version>` for quick recovery
+4. **Clean Build**: Delete `.next/` and run fresh `pnpm run deploy`
 
 ## Security Considerations
 

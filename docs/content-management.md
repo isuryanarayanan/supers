@@ -48,10 +48,10 @@ Post editing UI (client):
 Local only (default):
 - No backend required
 - Edit `data/posts.ts`
-- Run site with `npm run dev:site`
+- Run site with `pnpm run dev:site`
 
 API-backed (optional):
-- Start functions: `npm run dev:api`
+- Start functions: `pnpm run dev:api`
 - Sync posts: `node scripts/build-posts.js`
 - Use admin/auth endpoints for protected actions
 
@@ -62,9 +62,9 @@ See:
 ## 6) Tips & Troubleshooting
 
 - If posts don’t render correctly, check `components/post/post-cell.tsx` and per-type cell components
-- For API sync issues, run `npm run dev:api` and check terminal logs
+- For API sync issues, run `pnpm run dev:api` and check terminal logs
 - Verify environment variables for API usage: `aws/env/.env.dev` and `.env.production`
-- Rebuild posts after API changes: `npm run build:posts`
+- Rebuild posts after API changes: `pnpm run build:posts`
 
 Related:
 - [Posts API](./api/POSTS_API.md)

@@ -224,6 +224,9 @@ pnpm run dev:api           # Start API functions (requires AWS setup)
 pnpm run build             # Build optimized production site
 pnpm run build:posts       # Rebuild post data only
 
+# Frontend deployment fallback, bypasses GitHub Actions
+pnpm run deploy:pages:branch
+
 # Linting & Quality
 pnpm run lint              # Check code quality
 ```

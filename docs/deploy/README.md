@@ -8,6 +8,7 @@ Use this section to set up and deploy the backend and infrastructure.
 - [DynamoDB Setup](./DYNAMODB_SETUP.md)
 - [S3 Setup](./S3_SETUP.md)
 - [CI/CD](./CICD.md)
+- [GitHub Pages Deployment](./GITHUB_PAGES.md)
 
 ## Quick Links
 - Root deployment overview: [../deployment.md](../deployment.md)

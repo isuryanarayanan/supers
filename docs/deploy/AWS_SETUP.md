@@ -93,41 +93,41 @@ STAGE=prod
 #### A. Verify AWS Access
 ```bash
 # Check connectivity and permissions
-npm run aws:check:prod
+pnpm run aws:check:prod
 ```
 
 #### B. Create DynamoDB Table
 ```bash
 # Create production table
-npm run aws:init:dynamodb
+pnpm run aws:init:dynamodb
 
 # Create development table (optional)
-npm run aws:init:dynamodb:dev
+pnpm run aws:init:dynamodb:dev
 ```
 
 #### C. Create S3 Bucket
 ```bash
 # Create production bucket
-npm run aws:init:s3
+pnpm run aws:init:s3
 
 # Create development bucket (optional)  
-npm run aws:init:s3:dev
+pnpm run aws:init:s3:dev
 ```
 
 #### D. Verify Resources
 ```bash
 # Check all resources are created
-npm run aws:check:prod
+pnpm run aws:check:prod
 ```
 
 ### 4. Deploy Lambda Functions
 
 ```bash
 # Deploy API functions to production
-npm run deploy:api:prod
+pnpm run deploy:api:prod
 
 # Check deployment status
-npm run aws:check:prod
+pnpm run aws:check:prod
 ```
 
 ## 📊 Resource Details
@@ -176,23 +176,23 @@ To set up separate development and production environments:
 
 ### Checking Services
 ```bash
-npm run aws:check          # Check development environment
-npm run aws:check:prod     # Check production environment  
+pnpm run aws:check          # Check development environment
+pnpm run aws:check:prod     # Check production environment
 ```
 
 ### Resource Initialization  
 ```bash
-npm run aws:init:dynamodb      # Create DynamoDB table (prod)
-npm run aws:init:s3           # Create S3 bucket (prod)
-npm run aws:init:dynamodb:dev # Create DynamoDB table (dev)  
-npm run aws:init:s3:dev      # Create S3 bucket (dev)
+pnpm run aws:init:dynamodb      # Create DynamoDB table (prod)
+pnpm run aws:init:s3           # Create S3 bucket (prod)
+pnpm run aws:init:dynamodb:dev # Create DynamoDB table (dev)
+pnpm run aws:init:s3:dev      # Create S3 bucket (dev)
 ```
 
 ### Deployment
 ```bash
-npm run deploy:api:prod    # Deploy functions to production
-npm run dev:api           # Run functions locally
-npm run remove:api:prod   # Remove production deployment
+pnpm run deploy:api:prod    # Deploy functions to production
+pnpm run dev:api           # Run functions locally
+pnpm run remove:api:prod   # Remove production deployment
 ```
 
 ## 🚨 Troubleshooting

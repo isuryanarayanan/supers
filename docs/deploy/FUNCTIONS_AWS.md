@@ -55,10 +55,10 @@ ALLOWED_FILE_TYPES=image/*,video/*,audio/*,application/pdf,text/*
 ### Deploy Commands
 ```bash
 # Production deployment
-npm run deploy:api:prod
+pnpm run deploy:api:prod
 
 # Development deployment (if needed)
-npm run dev:api
+pnpm run dev:api
 ```
 
 ### Deployment Process
@@ -99,7 +99,7 @@ After successful deployment, you'll get an API base URL like:
 ### Run Functions Locally
 ```bash
 # Start local serverless offline
-npm run dev:api
+pnpm run dev:api
 
 # Functions available at http://localhost:3001
 ```
@@ -192,7 +192,7 @@ aws logs tail /aws/lambda/supers-files-prod-posts-list --follow
 ### Code Changes
 ```bash
 # Redeploy after code changes
-npm run deploy:api:prod
+pnpm run deploy:api:prod
 ```
 
 ### Environment Changes
@@ -203,10 +203,10 @@ npm run deploy:api:prod
 ### Rollback
 ```bash
 # Remove deployment if needed
-npm run remove:api:prod
+pnpm run remove:api:prod
 
 # Then redeploy previous version
-npm run deploy:api:prod
+pnpm run deploy:api:prod
 ```
 
 ## 📚 Related Documentation

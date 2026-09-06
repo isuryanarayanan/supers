@@ -42,6 +42,7 @@ Production deployment with AWS serverless infrastructure.
 - **[DynamoDB Setup](./deploy/DYNAMODB_SETUP.md)** - Database configuration and management
 - **[S3 Storage Setup](./deploy/S3_SETUP.md)** - File storage and CDN configuration
 - **[CI/CD Pipeline](./deploy/CICD.md)** - Automated deployment workflows
+- **[GitHub Pages Deployment](./deploy/GITHUB_PAGES.md)** - Actions and manual `gh-pages` branch deployment
 - **[Deployment Guide](./deployment.md)** - Production deployment strategies
 
 ### 🔌 API Reference

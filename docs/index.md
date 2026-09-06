@@ -22,6 +22,7 @@ This is the entry point to the supers documentation. For a rich overview and qui
 	- [DynamoDB Setup](./deploy/DYNAMODB_SETUP.md)
 	- [S3 Setup](./deploy/S3_SETUP.md)
 	- [CI/CD](./deploy/CICD.md)
+	- [GitHub Pages](./deploy/GITHUB_PAGES.md)
 - API
 	- [Posts API](./api/POSTS_API.md)
 	- [Files API](./api/FILES_API.md)

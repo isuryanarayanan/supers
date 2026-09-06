@@ -9,6 +9,7 @@ Use this page as a hub for all deployment-related documentation.
 - [DynamoDB Setup](./deploy/DYNAMODB_SETUP.md)
 - [S3 Setup](./deploy/S3_SETUP.md)
 - [CI/CD Pipeline](./deploy/CICD.md)
+- [GitHub Pages Deployment](./deploy/GITHUB_PAGES.md)
 
 ## Quick Start
 
@@ -16,5 +17,12 @@ Use this page as a hub for all deployment-related documentation.
 2. Initialize DynamoDB and S3 resources
 3. Deploy API functions to AWS
 4. Configure frontend API base URL and build
+5. Deploy frontend either with GitHub Actions or manually to the `gh-pages` branch
+
+Current manual frontend fallback:
+
+```bash
+pnpm run deploy:pages:branch
+```
 
 See the linked guides for full details.

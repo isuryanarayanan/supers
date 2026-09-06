@@ -188,7 +188,7 @@ echo 'NEXT_PUBLIC_API_BASE_URL=http://localhost:3001/dev' >> .env.local
 ### Step 1: Start API Functions (Backend)
 ```bash
 # Start serverless functions locally
-npm run dev:api
+pnpm run dev:api
 
 # Functions will be available at:
 # http://localhost:3001/dev/posts
@@ -199,7 +199,7 @@ npm run dev:api
 ### Step 2: Start Frontend (Separate Terminal)
 ```bash
 # Start Next.js development server
-npm run dev:site
+pnpm run dev:site
 
 # Website will be available at:
 # http://localhost:3000
@@ -220,7 +220,7 @@ curl http://localhost:3001/dev/posts
 ### Step 1: Deploy API Functions to AWS
 ```bash
 # Deploy serverless functions to production
-npm run deploy:api:prod
+pnpm run deploy:api:prod
 
 # This will:
 # 1. Package functions with dependencies
@@ -239,13 +239,21 @@ echo 'NEXT_PUBLIC_API_BASE_URL=https://your-api-id.execute-api.ap-south-1.amazon
 ### Step 3: Build and Deploy Frontend
 ```bash
 # Build optimized production site
-npm run build
+pnpm run build
 
-# For GitHub Pages deployment
-npm run deploy
+# GitHub Pages fallback that bypasses GitHub Actions:
+pnpm run deploy:pages:branch
 
 # Or deploy to your preferred hosting platform
 ```
+
+For GitHub Pages branch deployment, configure the repository as:
+
+```text
+Settings → Pages → Build and deployment → Deploy from a branch → gh-pages / root
+```
+
+See [GitHub Pages Deployment](./deploy/GITHUB_PAGES.md) for both the Actions and branch deployment paths.
 
 ---
 

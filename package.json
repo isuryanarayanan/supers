@@ -23,6 +23,7 @@
     "deploy": "node scripts/deploy.js",
     "deploy:posts-only": "node scripts/deploy.js posts-only",
     "deploy:build-only": "node scripts/deploy.js build-only",
+    "deploy:pages:branch": "node scripts/deploy-gh-pages.js",
     "versions": "node scripts/versions.js",
     "versions:list": "node scripts/versions.js list",
     "versions:status": "node scripts/versions.js status",

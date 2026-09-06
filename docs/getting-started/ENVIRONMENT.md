@@ -25,6 +25,9 @@ NEXT_PUBLIC_DEFAULT_THEME=light
 
 # GitHub Pages Deployment (if using)
 NEXT_PUBLIC_BASE_PATH=/your-repo-name
+
+# Frontend upload validation limit in bytes. 1073741824 = 1GB.
+NEXT_PUBLIC_MAX_FILE_SIZE=1073741824
 ```
 
 ### Environment-Specific Values
@@ -33,12 +36,14 @@ NEXT_PUBLIC_BASE_PATH=/your-repo-name
 ```env
 NEXT_PUBLIC_API_BASE_URL=http://localhost:3001/dev
 NEXT_PUBLIC_DEFAULT_THEME=light
+NEXT_PUBLIC_MAX_FILE_SIZE=1073741824
 ```
 
 #### Production (`.env.production`)
 ```env
 NEXT_PUBLIC_API_BASE_URL=https://abc123def456.execute-api.ap-south-1.amazonaws.com/prod
 NEXT_PUBLIC_DEFAULT_THEME=light
+NEXT_PUBLIC_MAX_FILE_SIZE=1073741824
 NEXT_PUBLIC_BASE_PATH=/supers
 ```
 
@@ -86,7 +91,8 @@ ALLOWED_FILE_TYPES=image/*,video/*,audio/*,application/pdf,text/*
 - **Multiple origins**: Use comma-separated values for multiple domains
 
 #### File Upload
-- **`MAX_FILE_SIZE`**: Maximum file size in bytes (default: 1GB = 1073741824)
+- **`MAX_FILE_SIZE`**: Backend/API upload validation limit in bytes (default: 1GB = 1073741824)
+- **`NEXT_PUBLIC_MAX_FILE_SIZE`**: Frontend upload validation limit in bytes (default: 1GB = 1073741824)
 - **`ALLOWED_FILE_TYPES`**: MIME types allowed for upload (comma-separated)
 
 ### Environment-Specific Configurations

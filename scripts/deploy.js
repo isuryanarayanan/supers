@@ -79,14 +79,14 @@ async function deploy() {
     
     // Step 3: Lint check
     console.log('\n📋 Step 3: Running lint checks');
-    const lintSuccess = execCommand('npm run lint');
+    const lintSuccess = execCommand('pnpm run lint');
     if (!lintSuccess) {
       console.warn('⚠️  Lint checks failed, continuing anyway...');
     }
     
     // Step 4: Next.js build
     console.log('\n📋 Step 4: Building Next.js application');
-    const buildSuccess = execCommand('npm run build');
+    const buildSuccess = execCommand('pnpm run build');
     if (!buildSuccess) {
       throw new Error('Next.js build failed');
     }
@@ -127,7 +127,7 @@ async function handleDeployment() {
       
     case 'build-only':
       console.log('📦 Running Next.js build only...');
-      execCommand('npm run build');
+      execCommand('pnpm run build');
       break;
       
     case 'full':
