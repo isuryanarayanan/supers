@@ -65,7 +65,7 @@ function copyDirectory(source, target) {
 function ensureWorktree() {
   if (fs.existsSync(path.join(worktreePath, '.git'))) {
     run(`git fetch origin ${branch}`, { cwd: worktreePath });
-    run('git pull --ff-only', { cwd: worktreePath });
+    run(`git pull --ff-only origin ${branch}`, { cwd: worktreePath });
     return;
   }
 
