@@ -528,7 +528,7 @@ export function PostsDashboard() {
         />
       ) : (
         <div className="min-h-[calc(100dvh-4rem)]">
-          <header className="sticky top-16 z-30 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
+          <header className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
             <div className={`xl:grid ${mode === "edit" ? "xl:grid-cols-[224px_minmax(0,1fr)_320px]" : mode === "split" ? "xl:grid-cols-[224px_minmax(0,1fr)]" : ""}`}>
               {mode !== "preview" && (
                 <div className="hidden h-14 items-center border-r px-3 xl:flex">
@@ -595,7 +595,7 @@ export function PostsDashboard() {
           ) : (
             <main className={`grid min-h-[calc(100dvh-7.5rem)] ${mode === "split" ? "xl:grid-cols-[224px_minmax(0,1fr)]" : "xl:grid-cols-[224px_minmax(640px,1fr)_320px]"}`}>
               <aside className="hidden border-r bg-muted/10 xl:block">
-                <div className="sticky top-30 max-h-[calc(100dvh-7.5rem)] overflow-y-auto p-4">
+                <div className="sticky top-14 max-h-[calc(100dvh-3.5rem)] overflow-y-auto p-4">
                   <EditorOutlineRail post={selectedPost} selectedCellId={selectedCellId} onSelect={selectOutlineCell} />
                 </div>
               </aside>
@@ -613,7 +613,7 @@ export function PostsDashboard() {
 
               {mode === "edit" && (
                 <aside className="hidden border-l bg-muted/10 xl:block">
-                  <div className="sticky top-30 max-h-[calc(100dvh-7.5rem)] overflow-y-auto">
+                  <div className="sticky top-14 max-h-[calc(100dvh-3.5rem)] overflow-y-auto">
                     <EditorInspector
                       post={selectedPost}
                       panel={panel}

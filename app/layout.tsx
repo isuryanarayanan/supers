@@ -4,7 +4,6 @@ import "./globals.css";
 import "./code-styles.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/components/auth/auth-provider";
-import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Toaster } from "sonner";
 
@@ -25,7 +24,7 @@ const robotoMono = Roboto_Mono({
 export const metadata: Metadata = {
   title: "supers — Surya Narayanan",
   description:
-    "supers is the personal site of Surya Narayanan (Senior Software Engineer, WareIQ). Technical and artistic projects and blog posts.",
+    "The personal site of Surya Narayanan, a software engineer working on backend systems, developer tools, infrastructure, and AI applications.",
 };
 
 export default function RootLayout({
@@ -40,9 +39,8 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <AuthProvider>
-            <div className="relative min-h-screen flex flex-col z-10">
-              <Header />
-              <main className="relative z-10 flex-1 w-full">
+            <div className="relative z-10 flex min-h-screen flex-col">
+              <main className="relative z-10 w-full flex-1">
                 <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 md:py-10 lg:px-8">
                   {children}
                 </div>
