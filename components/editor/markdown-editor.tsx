@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import { MarkdownCell } from "../post/markdown-cell";
-import { EyeIcon, CodeIcon } from "lucide-react";
+import { useRef } from "react";
+import { Bold, Code, Heading2, Italic, Link as LinkIcon, List } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
 interface MarkdownEditorProps {
@@ -15,115 +13,64 @@ interface MarkdownEditorProps {
   className?: string;
 }
 
-export function MarkdownEditor({
-  value,
-  onChange,
-  className,
-}: MarkdownEditorProps) {
-  const [activeTab, setActiveTab] = useState<"write" | "preview">("write");
+const tools = [
+  { label: "Heading", value: "## Heading", icon: Heading2 },
+  { label: "Bold", value: "**Bold text**", icon: Bold },
+  { label: "Italic", value: "*Italic text*", icon: Italic },
+  { label: "Link", value: "[Link text](https://example.com)", icon: LinkIcon },
+  { label: "List", value: "- Item", icon: List },
+  { label: "Code", value: "```ts\n// code\n```", icon: Code },
+];
+
+export function MarkdownEditor({ value, onChange, className }: MarkdownEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Some useful markdown templates for common elements
-  const templates = [
-    { label: "H1", template: "# Heading 1" },
-    { label: "H2", template: "## Heading 2" },
-    { label: "H3", template: "### Heading 3" },
-    { label: "Bold", template: "**Bold text**" },
-    { label: "Italic", template: "*Italic text*" },
-    { label: "Link", template: "[Link text](https://example.com)" },
-    { label: "Image", template: "![Alt text](https://example.com/image.jpg)" },
-    { label: "List", template: "- Item 1\n- Item 2\n- Item 3" },
-    {
-      label: "Code",
-      template: "```js\nconst hello = 'world';\nconsole.log(hello);\n```",
-    },
-    { label: "Info", template: ":::info\nThis is an info callout box.\n:::" },
-    {
-      label: "Warning",
-      template: ":::warning\nThis is a warning callout box.\n:::",
-    },
-    {
-      label: "Success",
-      template: ":::success\nThis is a success callout box.\n:::",
-    },
-  ];
-
-  const insertTemplate = (template: string) => {
-    if (activeTab === "preview") {
-      setActiveTab("write");
-    }
-
+  const insert = (template: string) => {
     const textarea = textareaRef.current;
-    if (textarea) {
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const newValue =
-        value.substring(0, start) +
-        (start > 0 && value.substring(start - 1, start) !== "\n" ? "\n" : "") +
-        template +
-        (end < value.length && value.substring(end, end + 1) !== "\n"
-          ? "\n"
-          : "") +
-        value.substring(end);
+    if (!textarea) return;
 
-      onChange(newValue);
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const before = value.slice(0, start);
+    const after = value.slice(end);
+    const prefix = before && !before.endsWith("\n") ? "\n" : "";
+    const suffix = after && !after.startsWith("\n") ? "\n" : "";
+    const nextValue = `${before}${prefix}${template}${suffix}${after}`;
+    const nextCursor = before.length + prefix.length + template.length;
 
-      // Set cursor position after inserted template
-      setTimeout(() => {
-        textarea.focus();
-        textarea.selectionStart = start + template.length + 1;
-        textarea.selectionEnd = start + template.length + 1;
-      }, 0);
-    }
+    onChange(nextValue);
+    requestAnimationFrame(() => {
+      textarea.focus();
+      textarea.setSelectionRange(nextCursor, nextCursor);
+    });
   };
 
   return (
-    <div className={cn("space-y-4", className)}>
-      <div className="flex flex-wrap gap-2">
-        {templates.map((item) => (
+    <div className={cn("overflow-hidden rounded-md border bg-background focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/15", className)}>
+      <div className="flex flex-wrap items-center gap-0.5 border-b bg-muted/20 px-2 py-1.5" role="toolbar" aria-label="Markdown formatting">
+        {tools.map(({ label, value: template, icon: Icon }) => (
           <Button
-            key={item.label}
-            variant="outline"
-            size="sm"
-            onClick={() => insertTemplate(item.template)}
+            key={label}
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 text-muted-foreground"
+            onClick={() => insert(template)}
+            title={label}
+            aria-label={label}
           >
-            {item.label}
+            <Icon className="h-3.5 w-3.5" />
           </Button>
         ))}
+        <span className="ml-auto px-2 text-[11px] text-muted-foreground">Markdown</span>
       </div>
-
-      <Tabs
-        value={activeTab}
-        onValueChange={(v) => setActiveTab(v as "write" | "preview")}
-        className="w-full"
-      >
-        <TabsList className="grid grid-cols-2 w-36 mb-2">
-          <TabsTrigger value="write" className="flex items-center gap-2">
-            <CodeIcon className="h-4 w-4" />
-            Write
-          </TabsTrigger>
-          <TabsTrigger value="preview" className="flex items-center gap-2">
-            <EyeIcon className="h-4 w-4" />
-            Preview
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="write" className="mt-0">
-          <Textarea
-            ref={textareaRef}
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            className="min-h-[350px] font-mono text-sm"
-            placeholder="Type markdown content here..."
-          />
-        </TabsContent>
-
-        <TabsContent value="preview" className="mt-0">
-          <Card className="p-4 min-h-[350px] overflow-auto bg-background">
-            <MarkdownCell content={value} />
-          </Card>
-        </TabsContent>
-      </Tabs>
+      <Textarea
+        ref={textareaRef}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="min-h-72 resize-y rounded-none border-0 bg-transparent px-4 py-3 font-mono text-sm leading-6 shadow-none focus-visible:ring-0"
+        placeholder="Write in Markdown…"
+      />
     </div>
   );
 }

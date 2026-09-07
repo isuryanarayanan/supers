@@ -2,18 +2,11 @@
 
 import { Cell, FileContent, ImageContent, Post, VideoContent } from "@/types/post";
 import { POST_TYPES, PostType } from "@/lib/constants";
-import { useAuth } from "@/components/auth/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -22,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { MarkdownEditor } from "@/components/editor/markdown-editor";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   DndContext,
   closestCenter,
@@ -43,33 +36,19 @@ import {
   ArrowDown,
   ArrowUp,
   Copy,
-  File,
   Grip,
-  Image as ImageIcon,
-  Music,
   Plus,
-  Search,
   Trash2,
-  Video,
 } from "lucide-react";
 import { nanoid } from "nanoid";
-import { toast } from "sonner";
 
 interface VisualEditorProps {
   post: Post;
   onChange: (post: Post) => void;
-}
-
-interface FileRecord {
-  id: string;
-  key?: string;
-  filename?: string;
-  originalName: string;
-  size: number;
-  mimeType: string;
-  uploadedAt?: Date | string;
-  s3Url: string;
-  metadata?: Record<string, unknown>;
+  showMetadata?: boolean;
+  selectedCellId?: string | null;
+  onCellSelect?: (cellId: string | null) => void;
+  onRequestMedia?: (cellId: string) => void;
 }
 
 interface CellEditorProps {
@@ -83,6 +62,8 @@ interface CellEditorProps {
   onMoveDown: () => void;
   onInsertBelow: (type?: Cell["type"]) => void;
   onPickMedia: () => void;
+  selected: boolean;
+  onSelect: () => void;
 }
 
 function createCell(type: Cell["type"] = "markdown", content?: Cell["content"]): Cell {
@@ -123,23 +104,10 @@ function cloneCell(cell: Cell): Cell {
   };
 }
 
-function fileTypeFromMime(mimeType: string): FileContent["fileType"] {
-  if (mimeType.startsWith("image/")) return "image";
-  if (mimeType.startsWith("video/")) return "video";
-  if (mimeType.startsWith("audio/")) return "audio";
-  return "document";
-}
-
-function fileToCell(file: FileRecord): Cell {
-  const fileType = fileTypeFromMime(file.mimeType || "");
-  return createCell("file", {
-    s3Url: file.s3Url,
-    displayType: fileType === "document" ? "attachment" : "inline",
-    fileType,
-    originalName: file.originalName || file.filename || file.key || "File",
-    size: file.size,
-    caption: "",
-  });
+function isCellEmpty(cell: Cell) {
+  if (typeof cell.content === "string") return !cell.content.trim();
+  if (cell.type === "image" || cell.type === "video") return !(cell.content as ImageContent | VideoContent).url?.trim();
+  return !(cell.content as FileContent).s3Url?.trim();
 }
 
 function SortableCell(props: CellEditorProps) {
@@ -152,9 +120,17 @@ function SortableCell(props: CellEditorProps) {
   };
 
   return (
-    <div ref={setNodeRef} style={style} className={isDragging ? "opacity-60" : ""}>
-      <div className="group relative rounded-xl border bg-card/70 shadow-sm transition-colors focus-within:border-primary/50">
-        <div className="absolute left-3 top-4 flex flex-col items-center gap-1 opacity-60 transition-opacity group-hover:opacity-100">
+    <div
+      id={`post-cell-${encodeURIComponent(props.cell.id)}`}
+      ref={setNodeRef}
+      style={style}
+      tabIndex={-1}
+      onFocusCapture={props.onSelect}
+      onClick={props.onSelect}
+      className={isDragging ? "opacity-60" : ""}
+    >
+      <div className={`group relative rounded-lg border transition-colors ${props.selected ? "border-foreground/25 bg-muted/25 ring-2 ring-ring/15" : "border-transparent bg-background hover:border-border"}`}>
+        <div className={`absolute left-2 top-3 flex flex-col items-center gap-1 transition-opacity ${props.selected ? "opacity-100" : "opacity-0 group-hover:opacity-70 group-focus-within:opacity-100"}`}>
           <button
             type="button"
             {...attributes}
@@ -169,11 +145,13 @@ function SortableCell(props: CellEditorProps) {
           <CellEditor {...props} />
         </div>
       </div>
-      <div className="flex justify-center py-2">
-        <Button type="button" variant="ghost" size="sm" onClick={() => props.onInsertBelow()}>
-          <Plus className="mr-2 h-4 w-4" />
-          Add below
+      <div className="group/insert flex h-8 items-center justify-center">
+        <div className="h-px flex-1 bg-border/50 opacity-0 transition-opacity group-hover/insert:opacity-100" />
+        <Button type="button" variant="ghost" size="sm" onClick={() => props.onInsertBelow()} className="relative z-10 mx-2 h-7 text-xs text-muted-foreground hover:text-foreground">
+          <Plus className="h-3.5 w-3.5" />
+          Add cell
         </Button>
+        <div className="h-px flex-1 bg-border/50 opacity-0 transition-opacity group-hover/insert:opacity-100" />
       </div>
     </div>
   );
@@ -188,8 +166,8 @@ function CellEditor({
   onDuplicate,
   onMoveUp,
   onMoveDown,
-  onInsertBelow,
   onPickMedia,
+  selected,
 }: CellEditorProps) {
   const handleContentChange = (value: string | ImageContent | VideoContent | FileContent) => {
     onChange({ ...cell, content: value });
@@ -204,8 +182,8 @@ function CellEditor({
     <div className="space-y-4 p-4">
       <div className="flex flex-wrap items-center gap-2">
         <span className="font-mono text-xs text-muted-foreground">{String(index + 1).padStart(2, "0")}</span>
-        <Select value={cell.type} onValueChange={(value) => handleTypeChange(value as Cell["type"])}>
-          <SelectTrigger className="h-9 w-32">
+        <Select value={cell.type} onValueChange={(value) => handleTypeChange(value as Cell["type"])} disabled={!isCellEmpty(cell)}>
+          <SelectTrigger className="h-8 w-28 border-0 bg-muted/50 text-xs shadow-none" title={!isCellEmpty(cell) ? "Cell type is locked after content is added" : "Change cell type"}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -216,7 +194,7 @@ function CellEditor({
           </SelectContent>
         </Select>
 
-        <div className="ml-auto flex items-center gap-1">
+        <div className={`ml-auto flex items-center gap-1 transition-opacity ${selected ? "opacity-100" : "opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"}`}>
           <Button type="button" variant="ghost" size="icon" onClick={onMoveUp} disabled={index === 0} title="Move up">
             <ArrowUp className="h-4 w-4" />
           </Button>
@@ -246,10 +224,6 @@ function CellEditor({
         />
       )}
 
-      <div className="flex flex-wrap gap-2 border-t pt-3">
-        <Button type="button" variant="outline" size="sm" onClick={() => onInsertBelow("markdown")}>Markdown below</Button>
-        <Button type="button" variant="outline" size="sm" onClick={() => onInsertBelow("file")}>File below</Button>
-      </div>
     </div>
   );
 }
@@ -352,118 +326,19 @@ function FileCellEditor({
   );
 }
 
-function MediaPickerDialog({
-  open,
-  onOpenChange,
-  onSelect,
-  onUseAsThumbnail,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSelect: (file: FileRecord) => void;
-  onUseAsThumbnail: (file: FileRecord) => void;
-}) {
-  const { token } = useAuth();
-  const [files, setFiles] = useState<FileRecord[]>([]);
-  const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!open || !token) return;
-
-    const loadFiles = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/files`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await response.json();
-        setFiles(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error("Failed to load files", error);
-        toast.error("Failed to load files");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadFiles();
-  }, [open, token]);
-
-  const filteredFiles = useMemo(() => {
-    const value = query.toLowerCase().trim();
-    if (!value) return files;
-    return files.filter((file) =>
-      `${file.originalName} ${file.mimeType}`.toLowerCase().includes(value)
-    );
-  }, [files, query]);
-
-  const iconFor = (mimeType: string) => {
-    if (mimeType.startsWith("image/")) return <ImageIcon className="h-4 w-4" />;
-    if (mimeType.startsWith("video/")) return <Video className="h-4 w-4" />;
-    if (mimeType.startsWith("audio/")) return <Music className="h-4 w-4" />;
-    return <File className="h-4 w-4" />;
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[82vh] max-w-4xl overflow-hidden p-0">
-        <DialogHeader className="border-b px-5 py-4">
-          <DialogTitle>Media</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4 p-5">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search files..." className="pl-10" />
-          </div>
-          <div className="max-h-[58vh] overflow-y-auto">
-            {loading ? (
-              <div className="py-12 text-center text-muted-foreground">Loading files...</div>
-            ) : filteredFiles.length === 0 ? (
-              <div className="py-12 text-center text-muted-foreground">No files found.</div>
-            ) : (
-              <div className="grid gap-3 md:grid-cols-2">
-                {filteredFiles.map((file) => (
-                  <div key={file.id || file.s3Url} className="rounded-lg border p-3">
-                    <div className="flex items-start gap-3">
-                      <div className="mt-0.5 text-muted-foreground">{iconFor(file.mimeType || "")}</div>
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium" title={file.originalName}>{file.originalName}</p>
-                        <p className="text-xs text-muted-foreground">{file.mimeType}</p>
-                      </div>
-                    </div>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <Button type="button" size="sm" onClick={() => onSelect(file)}>Insert</Button>
-                      {(file.mimeType || "").startsWith("image/") && (
-                        <Button type="button" size="sm" variant="outline" onClick={() => onUseAsThumbnail(file)}>
-                          Use as thumbnail
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-export function VisualEditor({ post, onChange }: VisualEditorProps) {
+export function VisualEditor({
+  post,
+  onChange,
+  showMetadata = true,
+  selectedCellId = null,
+  onCellSelect,
+  onRequestMedia,
+}: VisualEditorProps) {
   const [localPost, setLocalPost] = useState<Post>(post);
-  const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
-  const [mediaInsertIndex, setMediaInsertIndex] = useState<number | null>(null);
 
   useEffect(() => {
     setLocalPost(post);
   }, [post]);
-
-  const emitChange = useCallback((nextPost: Post) => {
-    setLocalPost(nextPost);
-    onChange(nextPost);
-  }, [onChange]);
 
   const updatePost = useCallback((updateFn: (prev: Post) => Post) => {
     setLocalPost((prev) => {
@@ -495,19 +370,22 @@ export function VisualEditor({ post, onChange }: VisualEditorProps) {
     }));
   }, [updatePost]);
 
-  const insertCell = useCallback((afterIndex: number | null = null, type: Cell["type"] = "markdown", cell?: Cell) => {
+  const insertCell = useCallback((afterIndex: number | null = null, type: Cell["type"] = "markdown") => {
+    const nextCell = createCell(type);
     updatePost((prev) => {
-      const nextCell = cell || createCell(type);
       const cells = [...prev.cells];
       const insertAt = afterIndex === null ? cells.length : afterIndex + 1;
       cells.splice(insertAt, 0, nextCell);
       return { ...prev, cells };
     });
-  }, [updatePost]);
+    requestAnimationFrame(() => onCellSelect?.(nextCell.id));
+  }, [onCellSelect, updatePost]);
 
   const deleteCell = useCallback((index: number) => {
+    const fallbackCell = localPost.cells[index - 1] || localPost.cells[index + 1];
     updatePost((prev) => ({ ...prev, cells: prev.cells.filter((_, i) => i !== index) }));
-  }, [updatePost]);
+    onCellSelect?.(fallbackCell?.id || null);
+  }, [localPost.cells, onCellSelect, updatePost]);
 
   const duplicateCell = useCallback((index: number) => {
     updatePost((prev) => {
@@ -542,79 +420,58 @@ export function VisualEditor({ post, onChange }: VisualEditorProps) {
     });
   }, [updatePost]);
 
-  const openMediaPicker = useCallback((afterIndex: number | null) => {
-    setMediaInsertIndex(afterIndex);
-    setMediaPickerOpen(true);
-  }, []);
-
-  const handleMediaSelect = useCallback((file: FileRecord) => {
-    insertCell(mediaInsertIndex, "file", fileToCell(file));
-    setMediaPickerOpen(false);
-    toast.success("File inserted");
-  }, [insertCell, mediaInsertIndex]);
-
-  const handleUseAsThumbnail = useCallback((file: FileRecord) => {
-    emitChange({
-      ...localPost,
-      thumbnail: { url: file.s3Url, alt: file.originalName || "" },
-    });
-    setMediaPickerOpen(false);
-    toast.success("Thumbnail updated");
-  }, [emitChange, localPost]);
-
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label>Title</Label>
-            <Input value={localPost.title} onChange={(e) => updatePost((prev) => ({ ...prev, title: e.target.value }))} />
+      {showMetadata && (
+        <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Title</Label>
+              <Input value={localPost.title} onChange={(e) => updatePost((prev) => ({ ...prev, title: e.target.value }))} />
+            </div>
+            <div className="space-y-2">
+              <Label>Excerpt</Label>
+              <Input value={localPost.excerpt || ""} onChange={(e) => updatePost((prev) => ({ ...prev, excerpt: e.target.value }))} />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label>Excerpt</Label>
-            <Input value={localPost.excerpt || ""} onChange={(e) => updatePost((prev) => ({ ...prev, excerpt: e.target.value }))} />
-          </div>
-        </div>
 
-        <Card className="space-y-4 p-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <Label>Type</Label>
-              <Select value={localPost.type} onValueChange={(value: PostType) => updatePost((prev) => ({ ...prev, type: value }))}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {POST_TYPES.map((type) => <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
+          <Card className="space-y-4 p-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label>Type</Label>
+                <Select value={localPost.type} onValueChange={(value: PostType) => updatePost((prev) => ({ ...prev, type: value }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {POST_TYPES.map((type) => <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <Select value={localPost.status} onValueChange={(status) => updatePost((prev) => ({ ...prev, status: status as Post["status"] }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="published">Published</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch checked={localPost.featured} onCheckedChange={(featured) => updatePost((prev) => ({ ...prev, featured }))} />
+              <Label>Featured</Label>
             </div>
             <div className="space-y-2">
-              <Label>Status</Label>
-              <Select value={localPost.status} onValueChange={(status) => updatePost((prev) => ({ ...prev, status: status as Post["status"] }))}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="draft">Draft</SelectItem>
-                  <SelectItem value="published">Published</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label>Thumbnail URL</Label>
+              <Input value={localPost.thumbnail?.url || ""} onChange={(e) => updatePost((prev) => ({ ...prev, thumbnail: { ...(prev.thumbnail || { alt: "" }), url: e.target.value } }))} />
             </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Switch checked={localPost.featured} onCheckedChange={(featured) => updatePost((prev) => ({ ...prev, featured }))} />
-            <Label>Featured</Label>
-          </div>
-          <div className="space-y-2">
-            <Label>Thumbnail URL</Label>
-            <Input value={localPost.thumbnail?.url || ""} onChange={(e) => updatePost((prev) => ({ ...prev, thumbnail: { ...(prev.thumbnail || { alt: "" }), url: e.target.value } }))} />
-          </div>
-          <div className="space-y-2">
-            <Label>Thumbnail alt</Label>
-            <Input value={localPost.thumbnail?.alt || ""} onChange={(e) => updatePost((prev) => ({ ...prev, thumbnail: { ...(prev.thumbnail || { url: "" }), alt: e.target.value } }))} />
-          </div>
-          <Button type="button" variant="outline" onClick={() => openMediaPicker(null)} className="w-full">
-            Pick thumbnail / insert media
-          </Button>
-        </Card>
-      </div>
+            <div className="space-y-2">
+              <Label>Thumbnail alt</Label>
+              <Input value={localPost.thumbnail?.alt || ""} onChange={(e) => updatePost((prev) => ({ ...prev, thumbnail: { ...(prev.thumbnail || { url: "" }), alt: e.target.value } }))} />
+            </div>
+          </Card>
+        </div>
+      )}
 
       <div className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -622,12 +479,9 @@ export function VisualEditor({ post, onChange }: VisualEditorProps) {
             <Label>Cells</Label>
             <p className="text-sm text-muted-foreground">{localPost.cells.length} cell{localPost.cells.length === 1 ? "" : "s"}</p>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <Button type="button" onClick={() => insertCell(null, "markdown")} variant="outline" size="sm"><Plus className="mr-2 h-4 w-4" />Markdown</Button>
-            <Button type="button" onClick={() => insertCell(null, "image")} variant="outline" size="sm"><Plus className="mr-2 h-4 w-4" />Image</Button>
-            <Button type="button" onClick={() => insertCell(null, "video")} variant="outline" size="sm"><Plus className="mr-2 h-4 w-4" />Video</Button>
-            <Button type="button" onClick={() => openMediaPicker(null)} variant="outline" size="sm"><Plus className="mr-2 h-4 w-4" />File</Button>
-          </div>
+          <Button type="button" onClick={() => insertCell(null, "markdown")} variant="outline" size="sm">
+            <Plus className="h-4 w-4" />Add cell
+          </Button>
         </div>
 
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -645,7 +499,12 @@ export function VisualEditor({ post, onChange }: VisualEditorProps) {
                   onMoveUp={() => moveCell(index, -1)}
                   onMoveDown={() => moveCell(index, 1)}
                   onInsertBelow={(type) => insertCell(index, type || "markdown")}
-                  onPickMedia={() => openMediaPicker(index)}
+                  onPickMedia={() => {
+                    onCellSelect?.(cell.id);
+                    onRequestMedia?.(cell.id);
+                  }}
+                  selected={selectedCellId === cell.id}
+                  onSelect={() => onCellSelect?.(cell.id)}
                 />
               ))}
             </div>
@@ -653,12 +512,6 @@ export function VisualEditor({ post, onChange }: VisualEditorProps) {
         </DndContext>
       </div>
 
-      <MediaPickerDialog
-        open={mediaPickerOpen}
-        onOpenChange={setMediaPickerOpen}
-        onSelect={handleMediaSelect}
-        onUseAsThumbnail={handleUseAsThumbnail}
-      />
     </div>
   );
 }

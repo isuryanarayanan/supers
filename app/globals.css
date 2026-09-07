@@ -231,6 +231,29 @@
     margin-bottom: 1rem;
   }
 
+  /* Full-width admin shell without a transformed sticky-positioning ancestor. */
+  .admin-workspace {
+    margin-block: -1.5rem !important;
+    margin-left: calc(50% - 50vw);
+  }
+
+  @media (min-width: 48rem) {
+    .admin-workspace {
+      margin-block: -2.5rem !important;
+    }
+  }
+
+  /* Application UI controls spacing explicitly; editorial margins stay in prose. */
+  .admin-workspace p {
+    margin-bottom: 0;
+    line-height: inherit;
+  }
+
+  .admin-workspace .prose p {
+    margin-bottom: 1.35rem;
+    line-height: 1.78;
+  }
+
   code {
     font-family: var(--font-mono);
     font-size: 0.875em;
