@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
 import { PostCard } from "@/components/post/post-card";
-import MatrixShaderBackground from "@/components/ui/matrix-shader-background";
+import IsovaluesShaderBackground from "@/components/ui/isovalues-shader-background";
 import { posts } from "@/data/posts";
 import { PostsApi } from "@/lib/posts-api";
 import { Post } from "@/types/post";
@@ -44,7 +44,7 @@ function SectionLink({ href, children }: { href: string; children: React.ReactNo
 export default function Home() {
   return (
     <div className="relative">
-      <MatrixShaderBackground className="hidden dark:block" />
+      <IsovaluesShaderBackground className="hidden dark:block" />
 
       <div className="relative z-10">
         <section className="flex min-h-[82svh] items-end py-16 md:min-h-[88svh] md:py-24">
