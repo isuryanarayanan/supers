@@ -12,9 +12,13 @@ export function Footer() {
   return (
     <footer className="relative z-10 mt-auto border-t border-border/60">
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between md:px-6">
-        <p className="font-mono text-xs uppercase tracking-[0.16em]">
+        <Link
+          href="/"
+          className="font-mono text-xs uppercase tracking-[0.16em] transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          aria-label="Supers home"
+        >
           © {new Date().getFullYear()} Supers
-        </p>
+        </Link>
         <nav className="flex flex-wrap gap-x-5 gap-y-2" aria-label="Footer">
           {links.map((link) => (
             <Link

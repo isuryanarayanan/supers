@@ -1,13 +1,11 @@
 "use client";
 
-import { Post } from "@/types/post";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { ThumbnailCell } from "./thumbnail-cell";
-import { formatDistance } from "date-fns";
+import { format } from "date-fns";
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-import { useRef, useEffect } from "react";
+
+import { Post } from "@/types/post";
+import { ThumbnailCell } from "./thumbnail-cell";
 
 interface ProjectPostCardProps {
   post: Post;
@@ -18,189 +16,77 @@ export function ProjectPostCard({
   post,
   variant = "default",
 }: ProjectPostCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const isHovering = useRef(false);
-  const formattedDate = formatDistance(new Date(post.updatedAt), new Date(), {
-    addSuffix: true,
-  });
-  const previewContent = post.excerpt || "";
-  const isCompact = variant === "compact";
-
-  useEffect(() => {
-    const cardElement = cardRef.current;
-    if (!cardElement) return;
-
-    let scrollTimeout: NodeJS.Timeout | null = null;
-
-    const handleMouseEnter = () => {
-      if (isHovering.current) return;
-      isHovering.current = true;
-
-      window.dispatchEvent(
-        new CustomEvent("cardHover", {
-          detail: { type: "leave" },
-        })
-      );
-
-      setTimeout(() => {
-        const rect = cardElement.getBoundingClientRect();
-        const scrollX =
-          window.pageXOffset || document.documentElement.scrollLeft;
-        const scrollY =
-          window.pageYOffset || document.documentElement.scrollTop;
-
-        window.dispatchEvent(
-          new CustomEvent("cardHover", {
-            detail: {
-              type: "enter",
-              cardId: post.id,
-              bounds: {
-                left: rect.left + scrollX,
-                top: rect.top + scrollY,
-                right: rect.right + scrollX,
-                bottom: rect.bottom + scrollY,
-                width: rect.width,
-                height: rect.height,
-              },
-            },
-          })
-        );
-      }, 10);
-    };
-
-    const handleMouseLeave = () => {
-      isHovering.current = false;
-      window.dispatchEvent(
-        new CustomEvent("cardHover", {
-          detail: {
-            type: "leave",
-            cardId: post.id,
-          },
-        })
-      );
-    };
-
-    const handleScroll = () => {
-      if (!isHovering.current) return;
-
-      if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
-      }
-
-      scrollTimeout = setTimeout(() => {
-        if (!isHovering.current) return;
-
-        const rect = cardElement.getBoundingClientRect();
-        const isInViewport =
-          rect.top < window.innerHeight &&
-          rect.bottom > 0 &&
-          rect.left < window.innerWidth &&
-          rect.right > 0;
-
-        if (!isInViewport) {
-          isHovering.current = false;
-          window.dispatchEvent(
-            new CustomEvent("cardHover", {
-              detail: {
-                type: "leave",
-                cardId: post.id,
-              },
-            })
-          );
-        } else {
-          const scrollX =
-            window.pageXOffset || document.documentElement.scrollLeft;
-          const scrollY =
-            window.pageYOffset || document.documentElement.scrollTop;
-
-          window.dispatchEvent(
-            new CustomEvent("cardHover", {
-              detail: {
-                type: "update",
-                cardId: post.id,
-                bounds: {
-                  left: rect.left + scrollX,
-                  top: rect.top + scrollY,
-                  right: rect.right + scrollX,
-                  bottom: rect.bottom + scrollY,
-                  width: rect.width,
-                  height: rect.height,
-                },
-              },
-            })
-          );
-        }
-      }, 16);
-    };
-
-    cardElement.addEventListener("mouseenter", handleMouseEnter);
-    cardElement.addEventListener("mouseleave", handleMouseLeave);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    return () => {
-      if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
-      }
-      if (isHovering.current) {
-        window.dispatchEvent(
-          new CustomEvent("cardHover", {
-            detail: {
-              type: "leave",
-              cardId: post.id,
-            },
-          })
-        );
-      }
-      cardElement.removeEventListener("mouseenter", handleMouseEnter);
-      cardElement.removeEventListener("mouseleave", handleMouseLeave);
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [post.id]);
+  const formattedDate = format(new Date(post.updatedAt), "MMM d, yyyy");
+  const showThumbnail = variant === "default" && post.thumbnail;
 
   return (
-    <Card
-      ref={cardRef}
-      className="w-full transition-all duration-500 hover:shadow-md dark:hover:shadow-primary/5 hover:scale-[1.005] transform-gpu"
+    <Link
+      href={`/post/${post.id}`}
+      className="group block border-t border-border/70 py-6 transition-colors last:border-b hover:border-foreground/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
-      <Link href={`/post/${post.id}`} className="block">
-        <CardContent className="px-4 py-3 md:px-5 md:py-4 flex flex-col">
-          <div className="flex items-start justify-between gap-3 mb-2">
-            <div className="space-y-1 flex-1">
-              <CardTitle className="transition-colors hover:text-primary text-xl font-bold leading-tight">
-                {post.title}
-              </CardTitle>
-              <p className="text-sm text-muted-foreground font-medium">
-                {formattedDate}
-              </p>
+      <article
+        className={
+          showThumbnail
+            ? "grid gap-5 sm:grid-cols-[minmax(0,1fr)_11rem] sm:items-start md:gap-8"
+            : "grid gap-3 md:grid-cols-[140px_1fr_auto] md:items-start md:gap-6"
+        }
+      >
+        {showThumbnail ? (
+          <div className="min-w-0 space-y-3">
+            <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
+              Project · {formattedDate}
+            </p>
+            <ProjectDetails post={post} />
+            <div className="sm:hidden">
+              <ProjectAction />
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="group font-medium flex-shrink-0"
-            >
-              Read more{" "}
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Button>
           </div>
+        ) : (
+          <>
+            <time className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground md:pt-1">
+              {formattedDate}
+            </time>
+            <ProjectDetails post={post} />
+            <ProjectAction />
+          </>
+        )}
 
-          {!isCompact && previewContent && (
-            <div className="mb-3">
-              <p className="text-muted-foreground line-clamp-3 leading-relaxed">
-                {previewContent}
-              </p>
+        {showThumbnail && (
+          <div className="order-first sm:order-none">
+            <ThumbnailCell
+              content={post.thumbnail!}
+              className="h-auto aspect-[16/10] rounded-md border border-border/60 grayscale transition-all duration-300 group-hover:border-foreground/20 group-hover:grayscale-0"
+            />
+            <div className="mt-3 hidden justify-end sm:flex">
+              <ProjectAction />
             </div>
-          )}
+          </div>
+        )}
+      </article>
+    </Link>
+  );
+}
 
-          {post.thumbnail && (
-            <div className="flex-shrink-0">
-              <ThumbnailCell
-                content={post.thumbnail}
-                className={isCompact ? "h-48" : "h-64 md:h-72"}
-              />
-            </div>
-          )}
-        </CardContent>
-      </Link>
-    </Card>
+function ProjectDetails({ post }: { post: Post }) {
+  return (
+    <div className="min-w-0 space-y-2">
+      <h3 className="text-xl font-bold leading-tight tracking-[-0.025em] text-foreground transition-colors group-hover:text-foreground/80 md:text-2xl">
+        {post.title}
+      </h3>
+      {post.excerpt && (
+        <p className="max-w-2xl text-sm leading-6 text-muted-foreground md:text-base md:leading-7">
+          {post.excerpt}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function ProjectAction() {
+  return (
+    <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground transition-colors group-hover:text-foreground md:pt-2">
+      View
+      <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+    </div>
   );
 }

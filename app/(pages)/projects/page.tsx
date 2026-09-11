@@ -1,8 +1,8 @@
+import { HomeLink } from "@/components/layout/home-link";
+import { PostCard } from "@/components/post/post-card";
 import { posts } from "@/data/posts";
 import { PostsApi } from "@/lib/posts-api";
-import { PostCard } from "@/components/post/post-card";
 
-// Process static posts to handle encoding issues
 const processedPosts = PostsApi.processStaticPosts(posts);
 
 export default function ProjectsPage() {
@@ -11,16 +11,30 @@ export default function ProjectsPage() {
   );
 
   return (
-    <div className="flex flex-col gap-12 md:gap-16">
-      <section>
-        <h1 className="text-4xl font-bold tracking-tight mb-12 md:mb-16">
+    <div className="mx-auto w-full max-w-5xl py-6 md:py-12">
+      <div className="mb-10 md:mb-14">
+        <HomeLink />
+      </div>
+
+      <header className="mb-12 max-w-3xl space-y-4 md:mb-16">
+        <h1 className="text-5xl font-black leading-none tracking-[-0.06em] md:text-7xl">
           Projects
         </h1>
-        <div className="grid gap-8 md:gap-10">
-          {publishedPosts.map((post) => (
+        <p className="max-w-2xl text-lg leading-8 text-muted-foreground">
+          Software projects and experiments by Surya Narayanan.
+        </p>
+      </header>
+
+      <section aria-label="Projects" className="grid">
+        {publishedPosts.length > 0 ? (
+          publishedPosts.map((post) => (
             <PostCard key={post.id} post={post} />
-          ))}
-        </div>
+          ))
+        ) : (
+          <div className="rounded-xl border border-dashed border-border p-10 text-center text-muted-foreground">
+            No projects yet.
+          </div>
+        )}
       </section>
     </div>
   );

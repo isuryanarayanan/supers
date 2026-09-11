@@ -1,3 +1,4 @@
+import { HomeLink } from "@/components/layout/home-link";
 import { posts } from "@/data/posts";
 import { PostsApi } from "@/lib/posts-api";
 import { PostCard } from "@/components/post/post-card";
@@ -11,6 +12,10 @@ export default function BlogPage() {
 
   return (
     <div className="mx-auto w-full max-w-5xl py-6 md:py-12">
+      <div className="mb-10 md:mb-14">
+        <HomeLink />
+      </div>
+
       <header className="mb-12 max-w-3xl space-y-4 md:mb-16">
         <h1 className="text-5xl font-black leading-none tracking-[-0.06em] md:text-7xl">
           Blog

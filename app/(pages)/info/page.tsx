@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Mail } from "lucide-react";
 
+import { HomeLink } from "@/components/layout/home-link";
 import { Button } from "@/components/ui/button";
 
 const experience = [
@@ -60,6 +61,10 @@ const skillGroups = [
 export default function AboutPage() {
   return (
     <div className="mx-auto w-full max-w-5xl py-12 md:py-20">
+      <div className="mb-10 md:mb-14">
+        <HomeLink />
+      </div>
+
       <header className="max-w-4xl pb-16 md:pb-24">
         <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           About
